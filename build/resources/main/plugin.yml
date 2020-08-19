@@ -1,6 +1,0 @@
-name: "pcr-wiki"
-author: "Sunrise"
-version: "0.1.0"
-main: "com.sunrise.wiki.PluginMain"
-info: ""
-depends: []
