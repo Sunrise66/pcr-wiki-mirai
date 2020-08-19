@@ -40,7 +40,6 @@ class PluginMain extends PluginBase {
 
     public void onLoad() {
         this.setting = loadConfig("setting.yml");
-
         this.setting.setIfAbsent("location", "CN");
         this.setting.setIfAbsent("autoUpdate",true);
 
