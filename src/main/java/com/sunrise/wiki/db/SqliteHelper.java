@@ -52,7 +52,7 @@ public class SqliteHelper {
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    public <T> T executeQuery(String sql, ResultSetExtractor<T> rse) throws SQLException, ClassNotFoundException {
+    public <T> T executeQuery2Bean(String sql, ResultSetExtractor<T> rse) throws SQLException, ClassNotFoundException {
         try {
             resultSet = getStatement().executeQuery(sql);
             T rs = rse.extractData(resultSet);
@@ -71,7 +71,7 @@ public class SqliteHelper {
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    public <T> List<T> executeQuery(String sql, RowMapper<T> rm) throws SQLException, ClassNotFoundException {
+    public <T> List<T> executeQuery2List(String sql, RowMapper<T> rm) throws SQLException, ClassNotFoundException {
         List<T> rsList = new ArrayList<T>();
         try {
             resultSet = getStatement().executeQuery(sql);
@@ -133,12 +133,12 @@ public class SqliteHelper {
         }
     }
 
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
+    public Connection getConnection() throws ClassNotFoundException, SQLException {
         if (null == connection) connection = getConnection(dbFilePath);
         return connection;
     }
 
-    private Statement getStatement() throws SQLException, ClassNotFoundException {
+    public Statement getStatement() throws SQLException, ClassNotFoundException {
         if (null == statement) statement = getConnection().createStatement();
         return statement;
     }
