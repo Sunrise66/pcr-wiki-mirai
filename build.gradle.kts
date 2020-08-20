@@ -31,6 +31,7 @@ dependencies {
     implementation(files("libs/commons-compress-1.19.jar"))
     implementation("com.squareup.okhttp3:okhttp:4.2.2")
     implementation("org.dom4j:dom4j:2.1.1")
+    implementation("org.xerial:sqlite-jdbc:3.32.3.1")
 
     testImplementation(kotlin("stdlib-jdk8"))
     testImplementation("net.mamoe:mirai-core:$miraiCoreVersion")

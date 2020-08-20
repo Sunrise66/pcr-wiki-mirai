@@ -12,6 +12,7 @@ import net.mamoe.mirai.console.plugins.Config;
 import net.mamoe.mirai.console.plugins.PluginBase;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.GroupMessage;
+import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.MessageReceipt;
 import net.mamoe.mirai.message.data.*;
 import okhttp3.Call;
@@ -41,7 +42,7 @@ class PluginMain extends PluginBase {
     public void onLoad() {
         this.setting = loadConfig("setting.yml");
         this.setting.setIfAbsent("location", "CN");
-        this.setting.setIfAbsent("autoUpdate",true);
+        this.setting.setIfAbsent("autoUpdate", true);
 
         this.location = this.setting.getString("location");
         this.autoUpdate = this.setting.getBoolean("autoUpdate");
@@ -59,8 +60,11 @@ class PluginMain extends PluginBase {
         this.DB_FILE_COMPRESSED_PATH = getDataFolder().getPath() + "\\" + this.DB_FILE_NAME_COMPRESSED;
         this.DB_VERSION_INFO_PATH = getDataFolder().getPath() + "\\" + "dbVersion.json";
 
-        if(autoUpdate){
-            checkDBVersion();
+        //如果用户设置了自动升级，则每隔24小时检查一次版本，否则只在加载插件时运行一次
+        if (autoUpdate) {
+            Objects.requireNonNull(getScheduler()).repeat(this::checkDBVersion,1000*60*60*24);
+        }else {
+            Objects.requireNonNull(getScheduler()).async(this::checkDBVersion);
         }
 
         getLogger().info("Plugin loaded!");
@@ -71,53 +75,73 @@ class PluginMain extends PluginBase {
         getLogger().info("Plugin enabled!");
     }
 
-    private void checkDBVersion() {
-        isReady = false;
-        getScheduler().async(() -> {
-            File DB_VERSION_INFO = new File(DB_VERSION_INFO_PATH);
-            if (!DB_VERSION_INFO.exists()) {
-                dbVersion = 0L;
-                getDBVersion();
-            } else {
-                try {
-                    JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(new FileInputStream(DB_VERSION_INFO),StandardCharsets.UTF_8))).getAsJsonObject();
-                    dbVersion = object.get("TruthVersion").getAsLong();
-                    getDBVersion();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    /**
+     * 核验数据库文件是否准备完成
+     *
+     * @param event
+     * @return
+     */
+    private boolean checkEnable(GroupMessageEvent event) {
+        if (!isReady) {
+            event.getGroup().sendMessage("数据库文件还未准备完成，请稍后再试！");
+            return false;
+        }
+        return true;
     }
 
+    /**
+     * 检查数据库版本信息
+     */
+    private void checkDBVersion() {
+        isReady = false;
+        File DB_VERSION_INFO = new File(DB_VERSION_INFO_PATH);
+        if (!DB_VERSION_INFO.exists()) {
+            dbVersion = 0L;
+            getDBVersion();
+        } else {
+            try {
+                JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(new FileInputStream(DB_VERSION_INFO), StandardCharsets.UTF_8))).getAsJsonObject();
+                dbVersion = object.get("TruthVersion").getAsLong();
+                getDBVersion();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 下载数据库文件
+     *
+     * @return 是否下载完成
+     */
     private boolean downloadDB() {
         boolean finished = false;
         try {
             File dbFileCompressed = new File(DB_FILE_COMPRESSED_PATH);
-            HttpURLConnection conn = (HttpURLConnection)new URL(DB_FILE_URL).openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URL(DB_FILE_URL).openConnection();
             conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
 
             InputStream inputStream = conn.getInputStream();
             int maxLength = conn.getContentLength();
-            if(dbFileCompressed.exists()){
+            if (dbFileCompressed.exists()) {
                 dbFileCompressed.delete();
             }
             FileOutputStream outputStream = new FileOutputStream(dbFileCompressed);
-            byte[] buf = new byte[1024*1024];
+            byte[] buf = new byte[1024 * 1024];
             int numRead;
             int totalDownload = 0;
-            while (true){
+            while (true) {
                 numRead = inputStream.read(buf);
                 totalDownload += numRead;
-                getLogger().info("数据库文件下载进度："+totalDownload+"/"+maxLength);
-                if(numRead<=0){
+                getLogger().info("数据库文件下载进度：" + totalDownload + "/" + maxLength);
+                if (numRead <= 0) {
                     break;
                 }
-                outputStream.write(buf,0,numRead);
+                outputStream.write(buf, 0, numRead);
             }
             inputStream.close();
             outputStream.close();
-            BrotliUtils.deCompress(DB_FILE_COMPRESSED_PATH,true);
+            BrotliUtils.deCompress(DB_FILE_COMPRESSED_PATH, true);
             isReady = true;
             getLogger().info("数据库缓存文件下载成功！");
             finished = true;
@@ -127,7 +151,10 @@ class PluginMain extends PluginBase {
         return finished;
     }
 
-    private void getDBVersion(){
+    /**
+     * 获取数据库版本信息及缓存文件
+     */
+    private void getDBVersion() {
         MyOKHttp.doRequest(LATEST_VERSION_URL, new MyCallBack() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -139,16 +166,16 @@ class PluginMain extends PluginBase {
                 String lastVersionJson = Objects.requireNonNull(response.body()).string();
                 JsonObject object = JsonParser.parseString(lastVersionJson).getAsJsonObject();
                 Long serverVersion = object.get("TruthVersion").getAsLong();
-                if(!dbVersion.equals(serverVersion)){
+                if (!dbVersion.equals(serverVersion)) {
                     getLogger().info("数据库不是最新版本，开始下载！");
-                    if (downloadDB()){
+                    if (downloadDB()) {
                         File versionInfo = new File(DB_VERSION_INFO_PATH);
                         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(versionInfo), StandardCharsets.UTF_8));
                         bw.write(lastVersionJson);
                         bw.flush();
                         bw.close();
                     }
-                }else {
+                } else {
                     isReady = true;
                     getLogger().info("数据库文件为最新，准备完毕！");
                 }
