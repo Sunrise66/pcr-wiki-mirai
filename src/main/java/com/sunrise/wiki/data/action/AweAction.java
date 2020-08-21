@@ -1,8 +1,7 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -48,12 +47,12 @@ public class AweAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         switch (aweType){
             case ubAndSkill:
-                return I18N.getString(R.string.Reduce_s1_damage_or_instant_healing_effect_of_union_burst_and_main_skills_cast_by_s2_for_s3_sec,
+                return I18N.getString("Reduce_s1_damage_or_instant_healing_effect_of_union_burst_and_main_skills_cast_by_s2_for_s3_sec",
                         buildExpression(level, percentValues, RoundingMode.UNNECESSARY, property),
                         targetParameter.buildTargetClause(),
                         buildExpression(level, durationValues, RoundingMode.UNNECESSARY, property));
             case ubOnly:
-                return I18N.getString(R.string.Reduce_s1_damage_or_instant_healing_effect_of_union_burst_cast_by_s2_for_s3_sec,
+                return I18N.getString("Reduce_s1_damage_or_instant_healing_effect_of_union_burst_cast_by_s2_for_s3_sec",
                         buildExpression(level, percentValues, RoundingMode.UNNECESSARY, property),
                         targetParameter.buildTargetClause(),
                         buildExpression(level, durationValues, RoundingMode.UNNECESSARY, property));

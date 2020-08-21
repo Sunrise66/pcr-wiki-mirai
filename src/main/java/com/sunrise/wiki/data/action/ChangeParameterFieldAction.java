@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 
@@ -19,7 +19,7 @@ public class ChangeParameterFieldAction extends AuraAction {
     @Override
     public String localizedDetail(int level, Property property) {
         if(targetParameter.targetType == TargetType.absolute){
-            return I18N.getString(R.string.Summon_a_field_of_radius_d1_to_s2_s3_s4_s5_for_s6_sec,
+            return I18N.getString("Summon_a_field_of_radius_d1_to_s2_s3_s4_s5_for_s6_sec",
                     (int)actionValue5,
                     auraActionType.description(),
                     targetParameter.buildTargetClause(),
@@ -27,7 +27,7 @@ public class ChangeParameterFieldAction extends AuraAction {
                     auraType.description(),
                     buildExpression(level, durationValues, RoundingMode.UNNECESSARY, property));
         } else {
-            return I18N.getString(R.string.Summon_a_field_of_radius_d1_at_position_of_s2_to_s3_s4_s5_for_s6_sec,
+            return I18N.getString("Summon_a_field_of_radius_d1_at_position_of_s2_to_s3_s4_s5_for_s6_sec",
                     (int)actionValue5,
                     targetParameter.buildTargetClause(),
                     auraActionType.description(),

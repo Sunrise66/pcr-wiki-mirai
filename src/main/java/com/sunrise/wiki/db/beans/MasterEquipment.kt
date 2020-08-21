@@ -1,10 +1,12 @@
-package com.github.malitsplus.shizurunotes.db
+package com.sunrise.wiki.db.beans
 
-import com.github.malitsplus.shizurunotes.data.Equipment
-import com.github.malitsplus.shizurunotes.data.EquipmentPiece
-import com.github.malitsplus.shizurunotes.data.Item
-import com.github.malitsplus.shizurunotes.data.Property
-import com.github.malitsplus.shizurunotes.utils.Utils
+import com.sunrise.wiki.data.Equipment
+import com.sunrise.wiki.data.EquipmentPiece
+import com.sunrise.wiki.data.Item
+import com.sunrise.wiki.data.Property
+import com.sunrise.wiki.db.DBHelper
+import com.sunrise.wiki.utils.Utils
+
 
 class MasterEquipment {
     fun getEquipmentMap(): MutableMap<Int, Equipment> {

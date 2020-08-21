@@ -1,9 +1,10 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.utils.Utils;
-import com.github.malitsplus.shizurunotes.data.Enemy;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.data.Skill;
+import com.sunrise.wiki.data.Enemy;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.data.Skill;
+import com.sunrise.wiki.db.DBHelper;
+import com.sunrise.wiki.utils.Utils;
 
 public class RawEnemy {
     public int enemy_id;
@@ -104,7 +105,7 @@ public class RawEnemy {
 
         //children part
         for (int i = 1; i <= 5; i++){
-            int childId = (int)Utils.getValueFromObject(this, "child_enemy_parameter_" + i);
+            int childId = (int) Utils.getValueFromObject(this, "child_enemy_parameter_" + i);
             if (childId != 0){
                 Enemy child = DBHelper.get().getEnemy(childId).getEnemy();
                 boss.getChildren().add(child);

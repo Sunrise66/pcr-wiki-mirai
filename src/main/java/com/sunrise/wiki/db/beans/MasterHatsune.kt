@@ -1,9 +1,9 @@
-package com.github.malitsplus.shizurunotes.db
+package com.sunrise.wiki.db.beans
 
-import com.github.malitsplus.shizurunotes.R
-import com.github.malitsplus.shizurunotes.common.I18N
-import com.github.malitsplus.shizurunotes.common.Statics
-import com.github.malitsplus.shizurunotes.data.HatsuneStage
+import com.sunrise.wiki.common.I18N
+import com.sunrise.wiki.common.Statics
+import com.sunrise.wiki.data.HatsuneStage
+import com.sunrise.wiki.db.DBHelper
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -29,7 +29,7 @@ class MasterHatsune {
             }
             DBHelper.get().getHatsuneSP(schedule.event_id)?.forEach { sp ->
                 DBHelper.get().getWaveGroupData(sp.wave_group_id)?.let {
-                    hatsuneStage.battleWaveGroupMap[I18N.getString(R.string.sp_mode_d, sp.mode)] = it.getWaveGroup(true)
+                    hatsuneStage.battleWaveGroupMap[I18N.getString("sp_mode_d", sp.mode)] = it.getWaveGroup(true)
                 }
             }
             hatsuneStageList.add(hatsuneStage)

@@ -1,8 +1,9 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.Enemy;
-import com.github.malitsplus.shizurunotes.data.EnemyRewardData;
-import com.github.malitsplus.shizurunotes.data.WaveGroup;
+import com.sunrise.wiki.data.Enemy;
+import com.sunrise.wiki.data.EnemyRewardData;
+import com.sunrise.wiki.data.WaveGroup;
+import com.sunrise.wiki.db.DBHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,9 +1,7 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.utils.Utils;
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 public class TriggerAction extends ActionParameter {
 
@@ -49,23 +47,23 @@ public class TriggerAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         switch (triggerType){
             case hp:
-                return I18N.getString(R.string.Trigger_HP_is_below_d, Math.round(actionValue3));
+                return I18N.getString("Trigger_HP_is_below_d", Math.round(actionValue3));
             case limitTime:
-                return I18N.getString(R.string.Trigger_Left_time_is_below_s_sec, Math.round(actionValue3));
+                return I18N.getString("Trigger_Left_time_is_below_s_sec", Math.round(actionValue3));
             case damage:
-                return I18N.getString(R.string.Trigger_d_on_damaged, Math.round(actionValue1));
+                return I18N.getString("Trigger_d_on_damaged", Math.round(actionValue1));
             case dead:
-                return I18N.getString(R.string.Trigger_d_on_dead, Math.round(actionValue1));
+                return I18N.getString("Trigger_d_on_dead", Math.round(actionValue1));
             case critical:
-                return I18N.getString(R.string.Trigger_d_on_critical_damaged, Math.round(actionValue1));
+                return I18N.getString("Trigger_d_on_critical_damaged", Math.round(actionValue1));
             case stealthFree:
-                return I18N.getString(R.string.Trigger_d_on_stealth, Math.round(actionValue1));
+                return I18N.getString("Trigger_d_on_stealth", Math.round(actionValue1));
             case Break:
-                return I18N.getString(R.string.Trigger_d1_on_break_and_last_for_s2_sec, Math.round(actionValue1), actionValue3);
+                return I18N.getString("Trigger_d1_on_break_and_last_for_s2_sec", Math.round(actionValue1), actionValue3);
             case dot:
-                return I18N.getString(R.string.Trigger_d_on_dot_damaged, Math.round(actionValue1));
+                return I18N.getString("Trigger_d_on_dot_damaged", Math.round(actionValue1));
             case allBreak:
-                return I18N.getString(R.string.Trigger_d_on_all_targets_break,
+                return I18N.getString("Trigger_d_on_all_targets_break",
                         Math.round(actionValue1));
             default:
                 return super.localizedDetail(level, property);

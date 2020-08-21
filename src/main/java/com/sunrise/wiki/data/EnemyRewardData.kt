@@ -1,6 +1,6 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
-import com.github.malitsplus.shizurunotes.common.Statics
+import com.sunrise.wiki.data.RewardData
 
 class EnemyRewardData(
     val rewardDataList: List<RewardData>

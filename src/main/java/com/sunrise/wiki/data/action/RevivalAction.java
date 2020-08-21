@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 public class RevivalAction extends ActionParameter {
 
@@ -39,7 +39,7 @@ public class RevivalAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         switch (revivalType){
             case normal:
-                return I18N.getString(R.string.Revive_s1_with_d2_HP,
+                return I18N.getString("Revive_s1_with_d2_HP",
                         targetParameter.buildTargetClause(), Math.round(actionValue2 * 100));
             default:
                 return super.localizedDetail(level, property);

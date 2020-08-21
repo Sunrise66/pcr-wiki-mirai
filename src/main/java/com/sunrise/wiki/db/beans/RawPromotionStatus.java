@@ -1,7 +1,7 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.Chara;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.data.Property;
 
 public class RawPromotionStatus {
     public int unit_id;

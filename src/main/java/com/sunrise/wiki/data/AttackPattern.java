@@ -1,13 +1,10 @@
 package com.sunrise.wiki.data;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.common.Statics;
-import com.github.malitsplus.shizurunotes.data.Skill;
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.common.Statics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class AttackPattern {
     private static String PHY_ICON = Statics.API_URL + "/icon/equipment/101011.webp";
@@ -78,9 +75,9 @@ public class AttackPattern {
 
     private String getLoopText(int index){
         if(index + 1 == loopStart)
-            return I18N.getString(R.string.loop_start);
+            return I18N.getString("loop_start");
         if(index + 1 == loopEnd)
-            return I18N.getString(R.string.loop_end);
+            return I18N.getString("loop_end");
         return "";
     }
 
@@ -95,16 +92,16 @@ public class AttackPattern {
             }
         }
         if (isSinglePattern)
-            return sb.append(I18N.getString(R.string.text_normal_attack_only)).toString();
+            return sb.append(I18N.getString("text_normal_attack_only")).toString();
 
 
         for (AttackPatternItem it: items){
             if (it.loopText.equals("")){
                 sb.append(it.skillText);
-            } else if (it.loopText.equals(I18N.getString(R.string.loop_start))){
-                sb.append(I18N.getString(R.string.text_loop_start)).append(it.skillText);
-            } else if (it.loopText.equals(I18N.getString(R.string.loop_end))){
-                sb.append(it.skillText).append(I18N.getString(R.string.text_loop_end)).append("-");
+            } else if (it.loopText.equals(I18N.getString("loop_start"))){
+                sb.append(I18N.getString("text_loop_start")).append(it.skillText);
+            } else if (it.loopText.equals(I18N.getString("loop_end"))){
+                sb.append(it.skillText).append(I18N.getString("text_loop_end")).append("-");
                 break;
             }
             sb.append("-");
@@ -212,37 +209,37 @@ enum PatternType{
     public String description(){
         switch (this){
             case hit:
-                return I18N.getStringWithSpace(R.string.hit);
+                return I18N.getStringWithSpace("hit");
             case main1:
-                return I18N.getStringWithSpace(R.string.main_skill_1);
+                return I18N.getStringWithSpace("main_skill_1");
             case main2:
-                return I18N.getStringWithSpace(R.string.main_skill_2);
+                return I18N.getStringWithSpace("main_skill_2");
             case main3:
-                return I18N.getStringWithSpace(R.string.main_skill_3);
+                return I18N.getStringWithSpace("main_skill_3");
             case main4:
-                return I18N.getStringWithSpace(R.string.main_skill_4);
+                return I18N.getStringWithSpace("main_skill_4");
             case main5:
-                return I18N.getStringWithSpace(R.string.main_skill_5);
+                return I18N.getStringWithSpace("main_skill_5");
             case main6:
-                return I18N.getStringWithSpace(R.string.main_skill_6);
+                return I18N.getStringWithSpace("main_skill_6");
             case main7:
-                return I18N.getStringWithSpace(R.string.main_skill_7);
+                return I18N.getStringWithSpace("main_skill_7");
             case main8:
-                return I18N.getStringWithSpace(R.string.main_skill_8);
+                return I18N.getStringWithSpace("main_skill_8");
             case main9:
-                return I18N.getStringWithSpace(R.string.main_skill_9);
+                return I18N.getStringWithSpace("main_skill_9");
             case main10:
-                return I18N.getStringWithSpace(R.string.main_skill_10);
+                return I18N.getStringWithSpace("main_skill_10");
             case sp1:
-                return I18N.getStringWithSpace(R.string.sp_skill_1);
+                return I18N.getStringWithSpace("sp_skill_1");
             case sp2:
-                return I18N.getStringWithSpace(R.string.sp_skill_2);
+                return I18N.getStringWithSpace("sp_skill_2");
             case sp3:
-                return I18N.getStringWithSpace(R.string.sp_skill_3);
+                return I18N.getStringWithSpace("sp_skill_3");
             case sp4:
-                return I18N.getStringWithSpace(R.string.sp_skill_4);
+                return I18N.getStringWithSpace("sp_skill_4");
             case sp5:
-                return I18N.getStringWithSpace(R.string.sp_skill_5);
+                return I18N.getStringWithSpace("sp_skill_5");
             default:
                 return "";
         }

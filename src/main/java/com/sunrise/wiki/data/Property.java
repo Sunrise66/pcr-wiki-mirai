@@ -1,9 +1,6 @@
 package com.sunrise.wiki.data;
 
-import androidx.annotation.Nullable;
-
-import com.github.malitsplus.shizurunotes.data.PropertyKey;
-import com.github.malitsplus.shizurunotes.utils.Utils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;

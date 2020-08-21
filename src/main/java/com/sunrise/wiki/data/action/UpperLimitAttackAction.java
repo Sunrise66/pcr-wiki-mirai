@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 public class UpperLimitAttackAction extends ActionParameter {
     @Override
@@ -12,7 +12,7 @@ public class UpperLimitAttackAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.s_Damage_is_reduced_on_low_level_players,
+        return I18N.getString("s_Damage_is_reduced_on_low_level_players",
                 super.localizedDetail(level, property));
     }
 }

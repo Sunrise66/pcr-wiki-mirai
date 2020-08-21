@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 public class CountDownAction extends ActionParameter {
     @Override
@@ -12,7 +12,7 @@ public class CountDownAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.Set_a_countdown_timer_on_s1_trigger_effect_d2_after_s3_sec,
+        return I18N.getString("Set_a_countdown_timer_on_s1_trigger_effect_d2_after_s3_sec",
                 targetParameter.buildTargetClause(), actionDetail1 % 10, actionValue1);
     }
 }

@@ -1,4 +1,6 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
+
+
 
 
 class WaveGroup(

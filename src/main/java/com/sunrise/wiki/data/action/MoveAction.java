@@ -1,9 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.utils.Utils;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.utils.Utils;
 
 public class MoveAction extends ActionParameter {
 
@@ -45,30 +45,30 @@ public class MoveAction extends ActionParameter {
     public String localizedDetail(int level, Property property){
         switch (moveType){
             case targetReturn:
-                return I18N.getString(R.string.Change_self_position_to_s_then_return, targetParameter.buildTargetClause());
+                return I18N.getString("Change_self_position_to_s_then_return", targetParameter.buildTargetClause());
             case absoluteReturn:
                 if(actionValue1 > 0)
-                    return I18N.getString(R.string.Change_self_position_s_forward_then_return, Utils.roundDownDouble(actionValue1));
+                    return I18N.getString("Change_self_position_s_forward_then_return", Utils.roundDownDouble(actionValue1));
                 else
-                    return I18N.getString(R.string.Change_self_position_s_backward_then_return, Utils.roundDownDouble(-actionValue1));
+                    return I18N.getString("Change_self_position_s_backward_then_return", Utils.roundDownDouble(-actionValue1));
             case target:
-                return I18N.getString(R.string.Change_self_position_to_s, targetParameter.buildTargetClause());
+                return I18N.getString("Change_self_position_to_s", targetParameter.buildTargetClause());
             case absolute:
             case absoluteWithoutDirection:
                 if(actionValue1 > 0)
-                    return I18N.getString(R.string.Change_self_position_s_forward, Utils.roundDownDouble(actionValue1));
+                    return I18N.getString("Change_self_position_s_forward", Utils.roundDownDouble(actionValue1));
                 else
-                    return I18N.getString(R.string.Change_self_position_s_backward, Utils.roundDownDouble(-actionValue1));
+                    return I18N.getString("Change_self_position_s_backward", Utils.roundDownDouble(-actionValue1));
             case targetByVelocity:
                 if(actionValue1 > 0)
-                    return I18N.getString(R.string.Move_to_s1_in_front_of_s2_with_velocity_s3_sec, Utils.roundDownDouble(actionValue1), targetParameter.buildTargetClause(), actionValue2);
+                    return I18N.getString("Move_to_s1_in_front_of_s2_with_velocity_s3_sec", Utils.roundDownDouble(actionValue1), targetParameter.buildTargetClause(), actionValue2);
                 else
-                    return I18N.getString(R.string.Move_to_s1_behind_of_s2_with_velocity_s3_sec, Utils.roundDownDouble(-actionValue1), targetParameter.buildTargetClause(), actionValue2);
+                    return I18N.getString("Move_to_s1_behind_of_s2_with_velocity_s3_sec", Utils.roundDownDouble(-actionValue1), targetParameter.buildTargetClause(), actionValue2);
             case absoluteByVelocity:
                 if(actionValue1 > 0)
-                    return I18N.getString(R.string.Move_forward_s1_with_velocity_s2_sec, Utils.roundDownDouble(actionValue1), actionValue2);
+                    return I18N.getString("Move_forward_s1_with_velocity_s2_sec", Utils.roundDownDouble(actionValue1), actionValue2);
                 else
-                    return I18N.getString(R.string.Move_backward_s1_with_velocity_s2_sec, Utils.roundDownDouble(-actionValue1), actionValue2);
+                    return I18N.getString("Move_backward_s1_with_velocity_s2_sec", Utils.roundDownDouble(-actionValue1), actionValue2);
             default:
                 return super.localizedDetail(level, property);
         }

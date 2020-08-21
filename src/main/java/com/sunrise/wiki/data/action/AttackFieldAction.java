@@ -1,9 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.data.PropertyKey;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.data.PropertyKey;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -41,14 +41,14 @@ public class AttackFieldAction extends ActionParameter {
         switch (fieldType){
             case repeat:
                 if (targetParameter.targetType == TargetType.absolute) {
-                    return I18N.getString(R.string.Summon_a_field_of_radius_d1_to_deal_s2_s3_damage_per_second_for_s4_sec_to_s5,
+                    return I18N.getString("Summon_a_field_of_radius_d1_to_deal_s2_s3_damage_per_second_for_s4_sec_to_s5",
                             (int)actionValue7,
                             buildExpression(level, property),
                             damageClass.description(),
                             buildExpression(level, durationValues, RoundingMode.UNNECESSARY, property),
                             targetParameter.buildTargetClause());
                 } else{
-                    return I18N.getString(R.string.Summon_a_field_of_radius_d1_at_position_of_s2_to_deal_s3_s4_damage_per_second_for_s5_sec,
+                    return I18N.getString("Summon_a_field_of_radius_d1_at_position_of_s2_to_deal_s3_s4_damage_per_second_for_s5_sec",
                             (int)actionValue7,
                             targetParameter.buildTargetClause(),
                             buildExpression(level, property),

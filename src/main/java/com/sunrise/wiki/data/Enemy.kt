@@ -1,9 +1,9 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
-import com.github.malitsplus.shizurunotes.R
-import com.github.malitsplus.shizurunotes.common.I18N
-import com.github.malitsplus.shizurunotes.common.Statics
-import com.github.malitsplus.shizurunotes.db.DBHelper
+import com.sunrise.wiki.common.I18N
+import com.sunrise.wiki.common.Statics
+import com.sunrise.wiki.db.DBHelper
+
 
 class Enemy (
     val enemyId: Int
@@ -53,6 +53,6 @@ class Enemy (
     }
 
     fun getLevelString(): String{
-        return I18N.getString(R.string.text_level) + level
+        return I18N.getString("text_level") + level
     }
 }

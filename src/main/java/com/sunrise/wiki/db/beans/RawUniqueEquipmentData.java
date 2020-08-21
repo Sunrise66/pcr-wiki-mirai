@@ -1,8 +1,9 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.Chara;
-import com.github.malitsplus.shizurunotes.data.Equipment;
-import com.github.malitsplus.shizurunotes.data.Property;
+import com.sunrise.wiki.data.Chara;
+import com.sunrise.wiki.data.Equipment;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.db.DBHelper;
 
 public class RawUniqueEquipmentData {
     public int equipment_id;

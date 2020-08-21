@@ -1,6 +1,6 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.Property;
+import com.sunrise.wiki.data.Property;
 
 public class RawUniqueEquipmentEnhanceData {
     /*

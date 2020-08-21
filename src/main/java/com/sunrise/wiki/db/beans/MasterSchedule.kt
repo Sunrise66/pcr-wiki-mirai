@@ -1,9 +1,10 @@
-package com.github.malitsplus.shizurunotes.db
+package com.sunrise.wiki.db.beans
 
-import com.github.malitsplus.shizurunotes.data.CampaignSchedule
-import com.github.malitsplus.shizurunotes.data.CampaignType
-import com.github.malitsplus.shizurunotes.data.EventSchedule
-import com.github.malitsplus.shizurunotes.data.EventType
+import com.sunrise.wiki.data.CampaignSchedule
+import com.sunrise.wiki.data.CampaignType
+import com.sunrise.wiki.data.EventSchedule
+import com.sunrise.wiki.data.EventType
+import com.sunrise.wiki.db.DBHelper
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -24,16 +25,20 @@ class MasterSchedule {
             )
         }
         DBHelper.get().getHatsuneSchedule(null)?.forEach {
-            scheduleList.add(EventSchedule(
+            scheduleList.add(
+                EventSchedule(
                 it.event_id, it.title, EventType.Hatsune,
                 LocalDateTime.parse(it.start_time, formatter),
                 LocalDateTime.parse(it.end_time, formatter)
-            ))
+            )
+            )
         }
         DBHelper.get().getTowerSchedule(null)?.forEach {
-            scheduleList.add(EventSchedule(it.tower_schedule_id, "", EventType.Tower,
+            scheduleList.add(
+                EventSchedule(it.tower_schedule_id, "", EventType.Tower,
                 LocalDateTime.parse(it.start_time, formatter), LocalDateTime.parse(it.end_time, formatter)
-            ))
+            )
+            )
         }
 
         if (nowTime == null) {

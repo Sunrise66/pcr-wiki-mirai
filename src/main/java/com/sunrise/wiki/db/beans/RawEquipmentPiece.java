@@ -1,6 +1,6 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.EquipmentPiece;
+import com.sunrise.wiki.data.EquipmentPiece;
 
 public class RawEquipmentPiece {
     public int equipment_id;

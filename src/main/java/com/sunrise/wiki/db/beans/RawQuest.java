@@ -1,9 +1,8 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.Quest;
-import com.github.malitsplus.shizurunotes.data.WaveGroup;
-import com.github.malitsplus.shizurunotes.db.RawWaveGroup;
-import com.github.malitsplus.shizurunotes.utils.Utils;
+import com.sunrise.wiki.data.Quest;
+import com.sunrise.wiki.data.WaveGroup;
+import com.sunrise.wiki.db.DBHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
 interface Item {
     val itemId: Int

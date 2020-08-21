@@ -1,8 +1,7 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
-import com.github.malitsplus.shizurunotes.R
-import com.github.malitsplus.shizurunotes.common.I18N
-import com.github.malitsplus.shizurunotes.common.Statics
+import com.sunrise.wiki.common.Statics
+import com.sunrise.wiki.common.I18N
 
 class RewardData(
     val rewardType: Int,
@@ -11,6 +10,6 @@ class RewardData(
     val odds: Int
 ) {
     val rewardIcon: String = Statics.EQUIPMENT_ICON_URL.format(rewardId)
-    val oddsString: String = I18N.getString(R.string.percent_modifier).format(odds)
+    val oddsString: String = I18N.getString("percent_modifier").format(odds)
 
 }

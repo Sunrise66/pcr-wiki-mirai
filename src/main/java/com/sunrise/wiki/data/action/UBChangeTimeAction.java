@@ -1,6 +1,7 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.data.Property;
 
 public class UBChangeTimeAction extends ActionParameter {
     @Override

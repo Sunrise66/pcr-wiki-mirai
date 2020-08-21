@@ -1,7 +1,7 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.Dungeon;
-import com.github.malitsplus.shizurunotes.db.RawEnemy;
+import com.sunrise.wiki.data.Dungeon;
+import com.sunrise.wiki.db.DBHelper;
 
 public class RawDungeon {
     public int dungeon_area_id;

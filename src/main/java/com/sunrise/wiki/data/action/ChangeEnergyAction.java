@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 
@@ -18,12 +18,12 @@ public class ChangeEnergyAction extends ActionParameter {
         switch (actionDetail1){
             case 1:
                 if (targetParameter.targetType == TargetType.self){
-                    return I18N.getString(R.string.Restore_s1_s2_TP, targetParameter.buildTargetClause(), buildExpression(level, null, RoundingMode.CEILING, property, false, true, false));
+                    return I18N.getString("Restore_s1_s2_TP", targetParameter.buildTargetClause(), buildExpression(level, null, RoundingMode.CEILING, property, false, true, false));
                 } else {
-                    return I18N.getString(R.string.Restore_s1_s2_TP, targetParameter.buildTargetClause(), buildExpression(level, RoundingMode.CEILING, property));
+                    return I18N.getString("Restore_s1_s2_TP", targetParameter.buildTargetClause(), buildExpression(level, RoundingMode.CEILING, property));
                 }
             default:
-                return I18N.getString(R.string.Make_s1_lose_s2_TP, targetParameter.buildTargetClause(), buildExpression(level, RoundingMode.CEILING, property));
+                return I18N.getString("Make_s1_lose_s2_TP", targetParameter.buildTargetClause(), buildExpression(level, RoundingMode.CEILING, property));
         }
     }
 }

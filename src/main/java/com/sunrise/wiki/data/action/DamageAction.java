@@ -1,9 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.data.PropertyKey;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.data.PropertyKey;
 
 public class DamageAction extends ActionParameter {
 
@@ -34,14 +34,14 @@ public class DamageAction extends ActionParameter {
         StringBuilder string = new StringBuilder();
         switch (criticalModifier){
             case normal:
-                string.append(I18N.getString(R.string.Deal_s1_s2_damage_to_s3, buildExpression(level, property), damageClass.description(), targetParameter.buildTargetClause()));
+                string.append(I18N.getString("Deal_s1_s2_damage_to_s3", buildExpression(level, property), damageClass.description(), targetParameter.buildTargetClause()));
                 break;
             case critical:
-                string.append(I18N.getString(R.string.Deal_s1_s2_damage_to_s3_and_this_attack_is_ensured_critical, buildExpression(level, property), damageClass.description(), targetParameter.buildTargetClause()));
+                string.append(I18N.getString("Deal_s1_s2_damage_to_s3_and_this_attack_is_ensured_critical", buildExpression(level, property), damageClass.description(), targetParameter.buildTargetClause()));
                 break;
         }
         if(actionValue6 != 0){
-            string.append(I18N.getString(R.string.Critical_damage_is_s_times_as_normal_damage, 2 * actionValue6));
+            string.append(I18N.getString("Critical_damage_is_s_times_as_normal_damage", 2 * actionValue6));
         }
 
         return string.toString();

@@ -1,6 +1,7 @@
-package com.github.malitsplus.shizurunotes.db
+package com.sunrise.wiki.db.beans
 
-import com.github.malitsplus.shizurunotes.data.Quest
+import com.sunrise.wiki.data.Quest
+import com.sunrise.wiki.db.DBHelper
 import java.util.*
 
 class MasterQuest {

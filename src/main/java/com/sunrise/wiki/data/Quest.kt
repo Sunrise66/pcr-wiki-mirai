@@ -1,7 +1,6 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
-import com.github.malitsplus.shizurunotes.R
-import com.github.malitsplus.shizurunotes.common.I18N
+import com.sunrise.wiki.common.I18N
 
 class Quest(
     val questId: Int,
@@ -82,10 +81,10 @@ class Quest(
         Others;
         fun description(): String {
             return when(this) {
-                Normal -> I18N.getStringWithSpace(R.string.text_quest_normal)
-                Hard -> I18N.getStringWithSpace(R.string.text_quest_hard)
-                VeryHard -> I18N.getStringWithSpace(R.string.text_quest_very_hard)
-                else -> I18N.getStringWithSpace(R.string.unknown)
+                Normal -> I18N.getStringWithSpace("text_quest_normal")
+                Hard -> I18N.getStringWithSpace("text_quest_hard")
+                VeryHard -> I18N.getStringWithSpace("text_quest_very_hard")
+                else -> I18N.getStringWithSpace("unknown")
             }
         }
     }

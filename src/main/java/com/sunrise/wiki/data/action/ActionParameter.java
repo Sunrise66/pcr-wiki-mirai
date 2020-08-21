@@ -1,11 +1,10 @@
 package com.sunrise.wiki.data.action;
 
-
-import com.github.malitsplus.shizurunotes.data.Skill;
 import com.sunrise.wiki.common.I18N;
 import com.sunrise.wiki.common.Statics;
 import com.sunrise.wiki.data.Property;
 import com.sunrise.wiki.data.PropertyKey;
+import com.sunrise.wiki.data.Skill;
 import com.sunrise.wiki.utils.Utils;
 import org.jetbrains.annotations.Nullable;
 

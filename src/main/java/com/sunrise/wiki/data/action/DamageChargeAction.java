@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 
@@ -14,7 +14,7 @@ public class DamageChargeAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.Charge_for_s1_sec_and_deal_s2_damage_taken_additional_damage_on_the_next_effect,
+        return I18N.getString("Charge_for_s1_sec_and_deal_s2_damage_taken_additional_damage_on_the_next_effect",
                 actionValue3, buildExpression(level, RoundingMode.UNNECESSARY, property));
     }
 }

@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 public class StealthAction extends ActionParameter {
     @Override
@@ -12,6 +12,6 @@ public class StealthAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.Stealth_for_s_sec, actionValue1);
+        return I18N.getString("Stealth_for_s_sec", actionValue1);
     }
 }

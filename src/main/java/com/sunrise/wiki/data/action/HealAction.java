@@ -1,9 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.data.PropertyKey;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.data.PropertyKey;
 
 public class HealAction extends ActionParameter {
 
@@ -30,6 +30,6 @@ public class HealAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.Restore_s1_s2_s3_HP, targetParameter.buildTargetClause(), buildExpression(level, null, null, property, true, false, false), percentModifier.description());
+        return I18N.getString("Restore_s1_s2_s3_HP", targetParameter.buildTargetClause(), buildExpression(level, null, null, property, true, false, false), percentModifier.description());
     }
 }

@@ -1,6 +1,7 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.utils.Utils;
+
+import com.sunrise.wiki.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class RawUnitPromotion {
     public List<Integer> getCharaSlots(){
         ArrayList<Integer> slotList = new ArrayList<>();
         for(int i = 1; i <= 6; i++){
-            int equip_id = (int)Utils.getValueFromObject(this, "equip_slot_" + i);
+            int equip_id = (int) Utils.getValueFromObject(this, "equip_slot_" + i);
 //            if(equip_id != 999999)
             slotList.add(equip_id);
         }

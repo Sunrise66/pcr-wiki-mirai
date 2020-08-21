@@ -1,9 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.data.PropertyKey;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.data.PropertyKey;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -54,9 +54,9 @@ public class AuraAction extends ActionParameter {
                 case magicalCritical: return PropertyKey.magicCritical.description();
                 case energyRecoverRate: return PropertyKey.energyRecoveryRate.description();
                 case lifeSteal: return PropertyKey.lifeSteal.description();
-                case moveSpeed: return I18N.getString(R.string.Move_Speed);
-                case physicalCriticalDamage: return I18N.getString(R.string.Physical_Critical_Damage);
-                case magicalCriticalDamage: return I18N.getString(R.string.Magical_Critical_Damage);
+                case moveSpeed: return I18N.getString("Move_Speed");
+                case physicalCriticalDamage: return I18N.getString("Physical_Critical_Damage");
+                case magicalCriticalDamage: return I18N.getString("Magical_Critical_Damage");
                 case accuracy: return PropertyKey.accuracy.description();
                 default: return "";
             }
@@ -76,8 +76,8 @@ public class AuraAction extends ActionParameter {
 
         public String description(){
             switch (this){
-                case raise: return I18N.getString(R.string.Raise);
-                case reduce: return I18N.getString(R.string.Reduce);
+                case raise: return I18N.getString("Raise");
+                case reduce: return I18N.getString("Reduce");
                 default: return "";
             }
         }
@@ -125,10 +125,10 @@ public class AuraAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         switch (breakType){
             case Break:
-                return I18N.getString(R.string.s1_s2_s3_s4_s5_during_break,
+                return I18N.getString("s1_s2_s3_s4_s5_during_break",
                         auraActionType.description(), targetParameter.buildTargetClause(), buildExpression(level, RoundingMode.UP, property), percentModifier.description(), auraType.description());
             default:
-                return I18N.getString(R.string.s1_s2_s3_s4_s5_for_s6_sec,
+                return I18N.getString("s1_s2_s3_s4_s5_for_s6_sec",
                         auraActionType.description(),
                         targetParameter.buildTargetClause(),
                         buildExpression(level, RoundingMode.UP, property),

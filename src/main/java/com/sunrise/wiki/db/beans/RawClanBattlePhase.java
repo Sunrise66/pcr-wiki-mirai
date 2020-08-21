@@ -1,7 +1,7 @@
 package com.sunrise.wiki.db.beans;
 
 
-import com.github.malitsplus.shizurunotes.data.ClanBattlePhase;
+import com.sunrise.wiki.data.ClanBattlePhase;
 
 public class RawClanBattlePhase {
     public int phase;

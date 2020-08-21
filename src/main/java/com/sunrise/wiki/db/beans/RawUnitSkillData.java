@@ -1,7 +1,7 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.Chara;
-import com.github.malitsplus.shizurunotes.data.Skill;
+import com.sunrise.wiki.data.Chara;
+import com.sunrise.wiki.data.Skill;
 
 public class RawUnitSkillData {
     public int unid_id;

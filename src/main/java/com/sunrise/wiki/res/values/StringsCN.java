@@ -609,5 +609,14 @@ public class StringsCN {
     public static String Use_s_if_this_skill_not_get_critical = "本技能未暴击的场合，使用[动作%s]。";
     public static String Change_attack_pattern_to_d = "切换至技能循环%d。";
     public static String This_effect_will_be_released_when_taking_damaged = "本效果将会在收到伤害时解除。";
+    public static String text_level = "Lv.";
+    public static String percent_modifier = "%d%%";
+    public static String percent_modifier_s = "%s%%";
+    public static String text_quest_normal = "Normal";
+    public static String text_quest_hard = "Hard";
+    public static String text_quest_very_hard = "Very Hard";
+    public static String rank_d = "R%d";
+    public static String x_d = "× %d";
+    public static String transition_name = "transItem_%d";
 
 }

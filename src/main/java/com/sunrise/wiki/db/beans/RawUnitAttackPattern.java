@@ -1,7 +1,8 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.utils.Utils;
-import com.github.malitsplus.shizurunotes.data.AttackPattern;
+
+import com.sunrise.wiki.data.AttackPattern;
+import com.sunrise.wiki.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class RawUnitAttackPattern {
         for(int i = 1; i <= 20; i++){
             // mistake? deliberately? only cy knows
             if (i == 14) continue;
-            int atkPattern =  (int)Utils.getValueFromObject(this, "atk_pattern_" + i);
+            int atkPattern =  (int) Utils.getValueFromObject(this, "atk_pattern_" + i);
             if(atkPattern != 0)
                 attackPatternList.add(atkPattern);
             else

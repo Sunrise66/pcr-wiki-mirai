@@ -1,7 +1,7 @@
 package com.sunrise.wiki.data;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
+
+import com.sunrise.wiki.common.I18N;
 
 public class Ailment {
 
@@ -19,7 +19,7 @@ public class Ailment {
             } else if(detail instanceof CharmDetail){
                 return ((CharmDetail)detail).description();
             } else {
-                return I18N.getString(R.string.Unknown);
+                return I18N.getString("Unknown");
             }
         }
     }
@@ -52,19 +52,19 @@ public class Ailment {
         public String description(){
             switch (this){
                 case detain:
-                    return I18N.getString(R.string.Detain_Damage);
+                    return I18N.getString("Detain_Damage");
                 case poison:
-                    return I18N.getString(R.string.Poison);
+                    return I18N.getString("Poison");
                 case burn:
-                    return I18N.getString(R.string.Burn);
+                    return I18N.getString("Burn");
                 case curse:
-                    return I18N.getString(R.string.Curse);
+                    return I18N.getString("Curse");
                 case violentPoison:
-                    return I18N.getString(R.string.Violent_Poison);
+                    return I18N.getString("Violent_Poison");
                 case hex:
-                    return I18N.getString(R.string.Hex);
+                    return I18N.getString("Hex");
                 default:
-                    return I18N.getString(R.string.Unknown);
+                    return I18N.getString("Unknown");
             }
         }
     }
@@ -92,11 +92,11 @@ public class Ailment {
         public String description(){
             switch (this){
                 case charm:
-                    return I18N.getString(R.string.Charm);
+                    return I18N.getString("Charm");
                 case confuse:
-                    return I18N.getString(R.string.Confuse);
+                    return I18N.getString("Confuse");
                 default:
-                    return I18N.getString(R.string.Unknown);
+                    return I18N.getString("Unknown");
             }
         }
     }
@@ -134,29 +134,29 @@ public class Ailment {
         public String description(){
             switch (this){
                 case slow:
-                    return I18N.getString(R.string.Slow);
+                    return I18N.getString("Slow");
                 case haste:
-                    return I18N.getString(R.string.Haste);
+                    return I18N.getString("Haste");
                 case paralyse:
-                    return I18N.getString(R.string.Paralyse);
+                    return I18N.getString("Paralyse");
                 case freeze:
-                    return I18N.getString(R.string.Freeze);
+                    return I18N.getString("Freeze");
                 case bind:
-                    return I18N.getString(R.string.Bind);
+                    return I18N.getString("Bind");
                 case sleep:
-                    return I18N.getString(R.string.Sleep);
+                    return I18N.getString("Sleep");
                 case stun:
-                    return I18N.getString(R.string.Stun);
+                    return I18N.getString("Stun");
                 case petrify:
-                    return I18N.getString(R.string.Petrify);
+                    return I18N.getString("Petrify");
                 case detain:
-                    return I18N.getString(R.string.Detain);
+                    return I18N.getString("Detain");
                 case faint:
-                    return I18N.getString(R.string.Faint);
+                    return I18N.getString("Faint");
                 case timeStop:
-                    return I18N.getString(R.string.time_stop);
+                    return I18N.getString("time_stop");
                 default:
-                    return I18N.getString(R.string.Unknown);
+                    return I18N.getString("Unknown");
             }
         }
     }
@@ -198,37 +198,37 @@ public class Ailment {
         public String description(){
             switch (this){
                 case knockBack:
-                    return I18N.getString(R.string.Knock_Back);
+                    return I18N.getString("Knock_Back");
                 case action:
-                    return I18N.getString(R.string.Action);
+                    return I18N.getString("Action");
                 case dot:
-                    return I18N.getString(R.string.Dot);
+                    return I18N.getString("Dot");
                 case charm:
-                    return I18N.getString(R.string.Charm);
+                    return I18N.getString("Charm");
                 case darken:
-                    return I18N.getString(R.string.Blind);
+                    return I18N.getString("Blind");
                 case silence:
-                    return I18N.getString(R.string.Silence);
+                    return I18N.getString("Silence");
                 case instantDeath:
-                    return I18N.getString(R.string.Instant_Death);
+                    return I18N.getString("Instant_Death");
                 case confuse:
-                    return I18N.getString(R.string.Confuse);
+                    return I18N.getString("Confuse");
                 case countBlind:
-                    return I18N.getString(R.string.Count_Blind);
+                    return I18N.getString("Count_Blind");
                 case inhibitHeal:
-                    return I18N.getString(R.string.Inhibit_Heal);
+                    return I18N.getString("Inhibit_Heal");
                 case fear:
-                    return I18N.getString(R.string.Fear);
+                    return I18N.getString("Fear");
                 case attackSeal:
-                    return I18N.getString(R.string.Seal);
+                    return I18N.getString("Seal");
                 case awe:
-                    return I18N.getString(R.string.Awe);
+                    return I18N.getString("Awe");
                 case toad:
-                    return I18N.getString(R.string.Polymorph);
+                    return I18N.getString("Polymorph");
                 case maxHP:
-                    return I18N.getString(R.string.Changing_Max_HP);
+                    return I18N.getString("Changing_Max_HP");
                 default:
-                    return I18N.getString(R.string.Unknown_Effect);
+                    return I18N.getString("Unknown_Effect");
             }
         }
     }

@@ -1,6 +1,7 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
-import com.github.malitsplus.shizurunotes.db.DBHelper
+import com.sunrise.wiki.db.DBHelper
+import com.sunrise.wiki.data.WaveGroup
 
 class ClanBattlePhase(
     val phase: Int,

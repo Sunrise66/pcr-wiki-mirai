@@ -1,9 +1,10 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.data.PropertyKey;
+
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.data.PropertyKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class KnightGuardAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.When_s1_HP_reaches_0_restore_s2_HP_once_in_next_s3_sec,
+        return I18N.getString("When_s1_HP_reaches_0_restore_s2_HP_once_in_next_s3_sec",
                 targetParameter.buildTargetClause(),
                 buildExpression(level, property),
                 buildExpression(level, durationValues, null, property));

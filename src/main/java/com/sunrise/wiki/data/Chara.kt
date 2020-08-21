@@ -1,13 +1,13 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
 import com.sunrise.wiki.common.I18N
-import com.sunrise.wiki.data.AttackPattern
-import com.sunrise.wiki.data.Property
 import com.sunrise.wiki.data.action.PassiveAction
-import java.text.DateFormat
+import java.awt.Image
+import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
+import javax.imageio.ImageIO
 
 class Chara: Cloneable {
 
@@ -29,6 +29,7 @@ class Chara: Cloneable {
     var guildId: Int = 0
     var normalAtkCastTime: Double = 0.0
     var positionIcon: Int = 0
+    var charaIcon: Image = ImageIO.read(File("src\\main\\resources\\position_middle.webp"))
     var maxCharaLevel: Int = 0
     var maxCharaRank: Int = 0
     var maxUniqueEquipmentLevel: Int = 0

@@ -1,11 +1,10 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
 import com.sunrise.wiki.db.DBHelper
 import java.awt.Image
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 import javax.imageio.ImageIO
 
 class ClanBattlePeriod(

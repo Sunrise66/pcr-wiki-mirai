@@ -1,9 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.utils.Utils;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.utils.Utils;
 
 public class BarrierAction extends ActionParameter {
 
@@ -45,32 +45,32 @@ public class BarrierAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         switch (barrierType){
             case physicalGuard:
-                return I18N.getString(R.string.Cast_a_barrier_on_s1_to_nullify_s2_physical_damage_for_s3_sec,
+                return I18N.getString("Cast_a_barrier_on_s1_to_nullify_s2_physical_damage_for_s3_sec",
                         targetParameter.buildTargetClause(),
                         buildExpression(level, property),
                         Utils.roundDouble(actionValue3));
             case magicalGuard:
-                return I18N.getString(R.string.Cast_a_barrier_on_s1_to_nullify_s2_magical_damage_for_s3_sec,
+                return I18N.getString("Cast_a_barrier_on_s1_to_nullify_s2_magical_damage_for_s3_sec",
                         targetParameter.buildTargetClause(),
                         buildExpression(level, property),
                         Utils.roundDouble(actionValue3));
             case physicalDrain:
-                return I18N.getString(R.string.Cast_a_barrier_on_s1_to_absorb_s2_physical_damage_for_s3_sec,
+                return I18N.getString("Cast_a_barrier_on_s1_to_absorb_s2_physical_damage_for_s3_sec",
                         targetParameter.buildTargetClause(),
                         buildExpression(level, property),
                         Utils.roundDouble(actionValue3));
             case magicalDrain:
-                return I18N.getString(R.string.Cast_a_barrier_on_s1_to_absorb_s2_magical_damage_for_s3_sec,
+                return I18N.getString("Cast_a_barrier_on_s1_to_absorb_s2_magical_damage_for_s3_sec",
                         targetParameter.buildTargetClause(),
                         buildExpression(level, property),
                         Utils.roundDouble(actionValue3));
             case bothDrain:
-                return I18N.getString(R.string.Cast_a_barrier_on_s1_to_absorb_s2_physical_and_magical_damage_for_s3_sec,
+                return I18N.getString("Cast_a_barrier_on_s1_to_absorb_s2_physical_and_magical_damage_for_s3_sec",
                         targetParameter.buildTargetClause(),
                         buildExpression(level, property),
                         Utils.roundDouble(actionValue3));
             case bothGuard:
-                return I18N.getString(R.string.Cast_a_barrier_on_s1_to_nullify_s2_physical_and_magical_damage_for_s3_sec,
+                return I18N.getString("Cast_a_barrier_on_s1_to_nullify_s2_physical_and_magical_damage_for_s3_sec",
                         targetParameter.buildTargetClause(),
                         buildExpression(level, property),
                         Utils.roundDouble(actionValue3));

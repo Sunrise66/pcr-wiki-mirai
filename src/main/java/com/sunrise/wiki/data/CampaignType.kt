@@ -1,4 +1,4 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
 import com.sunrise.wiki.common.I18N
 

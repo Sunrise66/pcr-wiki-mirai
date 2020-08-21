@@ -1,8 +1,8 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.utils.Utils;
-import com.github.malitsplus.shizurunotes.data.EnemyRewardData;
-import com.github.malitsplus.shizurunotes.data.RewardData;
+import com.sunrise.wiki.data.EnemyRewardData;
+import com.sunrise.wiki.data.RewardData;
+import com.sunrise.wiki.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class RawEnemyRewardData {
     public EnemyRewardData getEnemyRewardData() {
         List<RewardData> rewardDataList = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
-            int rewardId = (int)Utils.getValueFromObject(this, "reward_id_" + i);
+            int rewardId = (int) Utils.getValueFromObject(this, "reward_id_" + i);
             if (rewardId != 0) {
                 rewardDataList.add(new RewardData(
                         (int)Utils.getValueFromObject(this, "reward_type_" + i),

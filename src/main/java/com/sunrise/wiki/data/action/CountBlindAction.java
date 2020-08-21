@@ -1,8 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 
@@ -42,10 +43,10 @@ public class CountBlindAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         switch (countType){
             case time:
-                return I18N.getString(R.string.In_nex_s1_sec_s2_physical_attacks_will_miss,
+                return I18N.getString("In_nex_s1_sec_s2_physical_attacks_will_miss",
                         buildExpression(level, RoundingMode.UNNECESSARY, property), targetParameter.buildTargetClause());
             case count:
-                return I18N.getString(R.string.In_next_s1_attacks_s2_physical_attacks_will_miss,
+                return I18N.getString("In_next_s1_attacks_s2_physical_attacks_will_miss",
                         buildExpression(level, property), targetParameter.buildTargetClause());
             default:
                 return super.localizedDetail(level, property);

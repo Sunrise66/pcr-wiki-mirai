@@ -1,7 +1,9 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.utils.Utils;
 
+
+import com.sunrise.wiki.db.DBHelper;
+import com.sunrise.wiki.utils.Utils;
 
 import java.util.HashMap;
 import java.util.Map;

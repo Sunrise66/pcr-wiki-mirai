@@ -1,8 +1,7 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
-import com.github.malitsplus.shizurunotes.R
-import com.github.malitsplus.shizurunotes.common.I18N
-import com.github.malitsplus.shizurunotes.utils.Utils
+import com.sunrise.wiki.common.I18N
+import com.sunrise.wiki.utils.Utils
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -51,12 +50,12 @@ enum class EventType {
 
     val description: String
         get() = when (this) {
-            Campaign -> I18N.getString(R.string.campaign)
-            Hatsune -> I18N.getString(R.string.hatsune)
-            ClanBattle -> I18N.getString(R.string.clanBattle)
-            Tower -> I18N.getString(R.string.tower)
-            Gacha -> I18N.getString(R.string.gacha)
-//            else -> I18N.getString(R.string.unknown)
+            Campaign -> I18N.getString("campaign")
+            Hatsune -> I18N.getString("hatsune")
+            ClanBattle -> I18N.getString("clanBattle")
+            Tower -> I18N.getString("tower")
+            Gacha -> I18N.getString("gacha")
+//            else -> I18N.getString(unknown)
         }
 
     val color: Int

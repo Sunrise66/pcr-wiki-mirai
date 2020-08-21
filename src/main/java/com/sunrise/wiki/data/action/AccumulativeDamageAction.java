@@ -1,8 +1,7 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class AccumulativeDamageAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.Add_additional_s1_damage_per_attack_with_max_s2_stacks_to_current_target,
+        return I18N.getString("Add_additional_s1_damage_per_attack_with_max_s2_stacks_to_current_target",
                 buildExpression(level, property), buildExpression(level, stackValues, RoundingMode.FLOOR, property));
     }
 }

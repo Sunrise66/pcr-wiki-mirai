@@ -1,9 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.db.RawEquipmentEnhanceData;
+
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 
@@ -47,15 +47,15 @@ public class NoDamageAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         switch (noDamageType){
             case noDamage:
-                return I18N.getString(R.string.Make_s1_to_be_invulnerable_for_s2_sec,
+                return I18N.getString("Make_s1_to_be_invulnerable_for_s2_sec",
                         targetParameter.buildTargetClause(),
                         buildExpression(level, RoundingMode.UNNECESSARY, property));
             case dodgePhysics:
-                return I18N.getString(R.string.Make_s1_to_be_invulnerable_to_physical_damage_for_s2_sec,
+                return I18N.getString("Make_s1_to_be_invulnerable_to_physical_damage_for_s2_sec",
                         targetParameter.buildTargetClause(),
                         buildExpression(level, RoundingMode.UNNECESSARY, property));
             case Break:
-                return I18N.getString(R.string.Make_s1_to_be_invulnerable_to_break_for_s2_sec,
+                return I18N.getString("Make_s1_to_be_invulnerable_to_break_for_s2_sec",
                         targetParameter.buildTargetClause(),
                         buildExpression(level, RoundingMode.UNNECESSARY, property));
             default:

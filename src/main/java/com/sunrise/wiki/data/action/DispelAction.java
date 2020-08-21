@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -34,11 +34,11 @@ public class DispelAction extends ActionParameter {
         public String description(){
             switch (this){
                 case buff:
-                    return I18N.getString(R.string.buffs);
+                    return I18N.getString("buffs");
                 case debuff:
-                    return I18N.getString(R.string.debuffs);
+                    return I18N.getString("debuffs");
                 default:
-                    return I18N.getString(R.string.unknown);
+                    return I18N.getString("unknown");
             }
         }
     }
@@ -55,7 +55,7 @@ public class DispelAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.Clear_all_s1_on_s2_with_chance_s3,
+        return I18N.getString("Clear_all_s1_on_s2_with_chance_s3",
                 dispelType.description(),
                 targetParameter.buildTargetClause(),
                 buildExpression(level, chanceValues, RoundingMode.UNNECESSARY, property));

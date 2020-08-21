@@ -1,15 +1,11 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import com.github.malitsplus.shizurunotes.R
-import com.github.malitsplus.shizurunotes.ui.base.BackgroundSpan
-import com.github.malitsplus.shizurunotes.common.I18N
-import com.github.malitsplus.shizurunotes.common.Statics
-import com.github.malitsplus.shizurunotes.data.action.ActionParameter
-import com.github.malitsplus.shizurunotes.data.action.ActionRaw
-import com.github.malitsplus.shizurunotes.data.action.SummonAction
-import com.github.malitsplus.shizurunotes.db.DBHelper
+import com.sunrise.wiki.common.I18N
+import com.sunrise.wiki.common.Statics
+import com.sunrise.wiki.data.action.ActionParameter
+import com.sunrise.wiki.data.action.ActionRaw
+import com.sunrise.wiki.data.action.SummonAction
+import com.sunrise.wiki.db.DBHelper
 import java.util.*
 
 /***
@@ -60,69 +56,69 @@ class Skill(
         fun description(): String {
             return when (this) {
                 UB ->
-                    I18N.getStringWithSpace(R.string.union_burst)
+                    I18N.getStringWithSpace("union_burst")
                 UB_EVO ->
-                    I18N.getStringWithSpace(R.string.union_burst_evo)
+                    I18N.getStringWithSpace("union_burst_evo")
                 MAIN1 ->
-                    I18N.getStringWithSpace(R.string.main_skill_1)
+                    I18N.getStringWithSpace("main_skill_1")
                 MAIN2 ->
-                    I18N.getStringWithSpace(R.string.main_skill_2)
+                    I18N.getStringWithSpace("main_skill_2")
                 MAIN3 ->
-                    I18N.getStringWithSpace(R.string.main_skill_3)
+                    I18N.getStringWithSpace("main_skill_3")
                 MAIN4 ->
-                    I18N.getStringWithSpace(R.string.main_skill_4)
+                    I18N.getStringWithSpace("main_skill_4")
                 MAIN5 ->
-                    I18N.getStringWithSpace(R.string.main_skill_5)
+                    I18N.getStringWithSpace("main_skill_5")
                 MAIN6 ->
-                    I18N.getStringWithSpace(R.string.main_skill_6)
+                    I18N.getStringWithSpace("main_skill_6")
                 MAIN7 ->
-                    I18N.getStringWithSpace(R.string.main_skill_7)
+                    I18N.getStringWithSpace("main_skill_7")
                 MAIN8 ->
-                    I18N.getStringWithSpace(R.string.main_skill_8)
+                    I18N.getStringWithSpace("main_skill_8")
                 MAIN9 ->
-                    I18N.getStringWithSpace(R.string.main_skill_9)
+                    I18N.getStringWithSpace("main_skill_9")
                 MAIN10 ->
-                    I18N.getStringWithSpace(R.string.main_skill_10)
+                    I18N.getStringWithSpace("main_skill_10")
                 MAIN1_EVO ->
-                    I18N.getStringWithSpace(R.string.main_skill_1_evo)
+                    I18N.getStringWithSpace("main_skill_1_evo")
                 MAIN2_EVO ->
-                    I18N.getStringWithSpace(R.string.main_skill_2_evo)
+                    I18N.getStringWithSpace("main_skill_2_evo")
                 SP1 ->
-                    I18N.getStringWithSpace(R.string.sp_skill_1)
+                    I18N.getStringWithSpace("sp_skill_1")
                 SP1_EVO ->
-                    I18N.getStringWithSpace(R.string.sp_skill_1_evo)
+                    I18N.getStringWithSpace("sp_skill_1_evo")
                 SP2 ->
-                    I18N.getStringWithSpace(R.string.sp_skill_2)
+                    I18N.getStringWithSpace("sp_skill_2")
                 SP2_EVO ->
-                    I18N.getStringWithSpace(R.string.sp_skill_2_evo)
+                    I18N.getStringWithSpace("sp_skill_2_evo")
                 SP3 ->
-                    I18N.getStringWithSpace(R.string.sp_skill_3)
+                    I18N.getStringWithSpace("sp_skill_3")
                 SP4 ->
-                    I18N.getStringWithSpace(R.string.sp_skill_4)
+                    I18N.getStringWithSpace("sp_skill_4")
                 SP5 ->
-                    I18N.getStringWithSpace(R.string.sp_skill_5)
+                    I18N.getStringWithSpace("sp_skill_5")
                 EX1 ->
-                    I18N.getStringWithSpace(R.string.ex_skill_1)
+                    I18N.getStringWithSpace("ex_skill_1")
                 EX2 ->
-                    I18N.getStringWithSpace(R.string.ex_skill_2)
+                    I18N.getStringWithSpace("ex_skill_2")
                 EX3 ->
-                    I18N.getStringWithSpace(R.string.ex_skill_3)
+                    I18N.getStringWithSpace("ex_skill_3")
                 EX4 ->
-                    I18N.getStringWithSpace(R.string.ex_skill_4)
+                    I18N.getStringWithSpace("ex_skill_4")
                 EX5 ->
-                    I18N.getStringWithSpace(R.string.ex_skill_5)
+                    I18N.getStringWithSpace("ex_skill_5")
                 EX1_EVO ->
-                    I18N.getStringWithSpace(R.string.ex_skill_1_evo)
+                    I18N.getStringWithSpace("ex_skill_1_evo")
                 EX2_EVO ->
-                    I18N.getStringWithSpace(R.string.ex_skill_2_evo)
+                    I18N.getStringWithSpace("ex_skill_2_evo")
                 EX3_EVO ->
-                    I18N.getStringWithSpace(R.string.ex_skill_3_evo)
+                    I18N.getStringWithSpace("ex_skill_3_evo")
                 EX4_EVO ->
-                    I18N.getStringWithSpace(R.string.ex_skill_4_evo)
+                    I18N.getStringWithSpace("ex_skill_4_evo")
                 EX5_EVO ->
-                    I18N.getStringWithSpace(R.string.ex_skill_5_evo)
+                    I18N.getStringWithSpace("ex_skill_5_evo")
                 else ->
-                    I18N.getStringWithSpace(R.string.unknown)
+                    I18N.getStringWithSpace("unknown")
             }
         }
 
@@ -144,12 +140,12 @@ class Skill(
     var skillCastTime = 0.0
     var iconType = 0
     val castTimeText: String
-        get() = I18N.getString(R.string.text_cast_time) + skillCastTime + "s"
+        get() = I18N.getString("text_cast_time") + skillCastTime + "s"
 
     lateinit var skillName: String
     lateinit var description: String
     lateinit var iconUrl: String
-    lateinit var actionDescriptions: SpannableStringBuilder
+    lateinit var actionDescriptions: StringBuilder
 
     val friendlyMinionList = mutableListOf<Minion>()
     val enemyMinionList = mutableListOf<Enemy>()
@@ -251,19 +247,11 @@ class Skill(
         level: Int,
         property: Property
     ) {
-        val builder = SpannableStringBuilder()
+        val builder = StringBuilder()
         for (i in actions.indices) {
             builder.append("  ")
                 .append((i + 1).toString())
                 .append("  ")
-            builder.setSpan(
-                BackgroundSpan(
-                    BackgroundSpan.BORDER_RECT
-                ),
-                builder.length - 4,
-                builder.length - 1,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
             builder.append(actions[i].parameter.localizedDetail(level, property))
                 .append("\n")
         }

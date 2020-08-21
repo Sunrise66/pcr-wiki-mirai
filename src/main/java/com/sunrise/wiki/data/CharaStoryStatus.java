@@ -1,5 +1,7 @@
 package com.sunrise.wiki.data;
 
+import com.sunrise.wiki.data.Property;
+
 public class CharaStoryStatus {
 
     public int charaId;

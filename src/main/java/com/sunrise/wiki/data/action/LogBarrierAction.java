@@ -1,9 +1,10 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.utils.Utils;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.utils.Utils;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class LogBarrierAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.Cast_a_barrier_on_s1_to_reduce_damage_over_s2_with_coefficient_s3_the_greater_the_less_reduced_amount_for_s4_s,
+        return I18N.getString("Cast_a_barrier_on_s1_to_reduce_damage_over_s2_with_coefficient_s3_the_greater_the_less_reduced_amount_for_s4_s",
                 targetParameter.buildTargetClause(),
                 Utils.roundDouble(actionValue5),
                 buildExpression(level, RoundingMode.UNNECESSARY, property),

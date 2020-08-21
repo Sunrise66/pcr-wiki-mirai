@@ -1,10 +1,6 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.common.Statics;
-import com.github.malitsplus.shizurunotes.data.Chara;
-import com.github.malitsplus.shizurunotes.data.Property;
-import java.security.PublicKey;
-import java.util.Locale;
+import com.sunrise.wiki.data.Property;
 
 public class RawUnitRarity {
     public int unit_id;

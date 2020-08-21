@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 
@@ -42,7 +42,7 @@ public class ChannelAction extends AuraAction {
     public String localizedDetail(int level, Property property) {
         switch (releaseType){
             case damage:
-                return I18N.getString(R.string.Channeling_for_s1_sec_disrupted_by_taking_damage_d2_times_s3_s4_s5_s6_s7,
+                return I18N.getString("Channeling_for_s1_sec_disrupted_by_taking_damage_d2_times_s3_s4_s5_s6_s7",
                         buildExpression(level, durationValues, RoundingMode.UNNECESSARY, property),
                         actionDetail3,
                         auraActionType.description(),

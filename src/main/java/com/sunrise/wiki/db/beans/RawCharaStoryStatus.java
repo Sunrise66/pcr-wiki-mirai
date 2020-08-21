@@ -1,9 +1,9 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.utils.Utils;
-import com.github.malitsplus.shizurunotes.data.Chara;
-import com.github.malitsplus.shizurunotes.data.CharaStoryStatus;
-import com.github.malitsplus.shizurunotes.data.Property;
+import com.sunrise.wiki.data.Chara;
+import com.sunrise.wiki.data.CharaStoryStatus;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.utils.Utils;
 
 public class RawCharaStoryStatus {
     public int story_id;
@@ -22,7 +22,7 @@ public class RawCharaStoryStatus {
     public Property getCharaStoryStatus(Chara chara){
         Property storyProperty = new Property();
         for(int i = 1; i <= 5; i++){
-            int typeValue = (int)Utils.getValueFromObject(this, "status_type_" + i);
+            int typeValue = (int) Utils.getValueFromObject(this, "status_type_" + i);
             if(typeValue != 0){
                 int typeRate = (int)Utils.getValueFromObject(this, "status_rate_" + i);
                 CharaStoryStatus charaStoryStatus = new CharaStoryStatus(chara.getCharaId(), typeValue, typeRate);

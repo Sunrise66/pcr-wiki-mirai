@@ -1,7 +1,7 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.utils.Utils;
-import com.github.malitsplus.shizurunotes.data.Skill;
+import com.sunrise.wiki.data.Skill;
+import com.sunrise.wiki.utils.Utils;
 
 public class RawSkillData {
     public int skill_id;
@@ -36,7 +36,7 @@ public class RawSkillData {
                 icon_type
         );
         for(int i = 1; i <= 7; i++){
-            int action = (int)Utils.getValueFromObject(this, "action_" + i);
+            int action = (int) Utils.getValueFromObject(this, "action_" + i);
             if(action != 0) {
                 skill.getActions().add(skill.new Action(action, (int) Utils.getValueFromObject(this, "depend_action_" + i)));
             }

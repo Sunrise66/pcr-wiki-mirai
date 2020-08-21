@@ -1,8 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.util.List;
 
@@ -31,9 +32,9 @@ public class SummonAction extends ActionParameter {
 
         public String description(){
             switch (this){
-                case ours: return I18N.getString(R.string.own_side);
-                case other: return I18N.getString(R.string.opposite);
-                default: return I18N.getString(R.string.unknown);
+                case ours: return I18N.getString("own_side");
+                case other: return I18N.getString("opposite");
+                default: return I18N.getString("unknown");
             }
         }
     }
@@ -61,9 +62,9 @@ public class SummonAction extends ActionParameter {
 
         public String description(){
             switch (this){
-                case normal: return I18N.getString(R.string.normal_type);
-                case phantom: return I18N.getString(R.string.phantom_type);
-                default: return I18N.getString(R.string.unknown);
+                case normal: return I18N.getString("normal_type");
+                case phantom: return I18N.getString("phantom_type");
+                default: return I18N.getString("unknown");
             }
         }
     }
@@ -81,13 +82,13 @@ public class SummonAction extends ActionParameter {
     @Override
     public String localizedDetail(int level, Property property) {
         if(actionValue7 > 0){
-            return I18N.getString(R.string.At_d1_in_front_of_s2_summon_a_minion_id_d3,
+            return I18N.getString("At_d1_in_front_of_s2_summon_a_minion_id_d3",
                     (int)actionValue7, targetParameter.buildTargetClause(), actionDetail2);
         } else if (actionValue7 < 0){
-            return I18N.getString(R.string.At_d1_behind_of_s2_summon_a_minion_id_d3,
+            return I18N.getString("At_d1_behind_of_s2_summon_a_minion_id_d3",
                     (int)-actionValue7, targetParameter.buildTargetClause(), actionDetail2);
         } else {
-            return I18N.getString(R.string.At_the_position_of_s1_summon_a_minion_id_d2,
+            return I18N.getString("At_the_position_of_s1_summon_a_minion_id_d2",
                     targetParameter.buildTargetClause(), actionDetail2);
         }
     }

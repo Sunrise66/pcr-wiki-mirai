@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class FearAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.Fear_s1_with_s2_chance_for_s3_sec,
+        return I18N.getString("Fear_s1_with_s2_chance_for_s3_sec",
                 targetParameter.buildTargetClause(),
                 buildExpression(level, chanceValues, RoundingMode.UNNECESSARY, property),
                 buildExpression(level, durationValues, RoundingMode.UNNECESSARY, property));

@@ -1,9 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.utils.Utils;
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.utils.Utils;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -48,13 +47,13 @@ public class ActionByHitCountAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         String limitation;
         if (actionValue5 > 0) {
-            limitation = I18N.getString(R.string.max_s_times, Utils.roundIfNeed(actionValue5));
+            limitation = I18N.getString("max_s_times", Utils.roundIfNeed(actionValue5));
         } else {
             limitation = "";
         }
         switch (conditionType) {
             case hit:
-                return I18N.getString(R.string.Use_d1_s2_every_s3_hits_in_next_s4_sec,
+                return I18N.getString("Use_d1_s2_every_s3_hits_in_next_s4_sec",
                     actionDetail2 % 10,
                     limitation,
                     Utils.roundIfNeed(actionValue1),

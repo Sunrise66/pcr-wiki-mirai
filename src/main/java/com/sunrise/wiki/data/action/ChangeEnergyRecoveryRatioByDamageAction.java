@@ -1,9 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.data.Skill;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.data.Skill;
 
 public class ChangeEnergyRecoveryRatioByDamageAction extends ActionParameter {
 
@@ -25,7 +25,7 @@ public class ChangeEnergyRecoveryRatioByDamageAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.change_energy_recovery_ratio_of_action_s1_to_s2_when_s3_get_damage,
+        return I18N.getString("change_energy_recovery_ratio_of_action_s1_to_s2_when_s3_get_damage",
                 getChildrenActionString(),
                 actionValue1,
                 targetParameter.buildTargetClause());

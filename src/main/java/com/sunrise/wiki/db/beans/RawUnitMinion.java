@@ -1,7 +1,7 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.Minion;
-import com.github.malitsplus.shizurunotes.data.Skill;
+import com.sunrise.wiki.data.Minion;
+import com.sunrise.wiki.data.Skill;
 
 public class RawUnitMinion {
     public int unit_id;

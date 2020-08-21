@@ -1,11 +1,12 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.Statics;
-import com.github.malitsplus.shizurunotes.data.Chara;
+import com.sunrise.wiki.common.Statics;
+import com.sunrise.wiki.data.Chara;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -83,13 +84,28 @@ public class RawUnitBasic {
 
         if(search_area_width < 300) {
             chara.position = "1";
-            chara.setPositionIcon(R.drawable.position_forward);
+//            chara.setPositionIcon(R.drawable.position_forward);
+            try {
+                chara.setCharaIcon(ImageIO.read(new File("src\\main\\resources\\position_forward.webp")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if(search_area_width > 300 && search_area_width < 600){
             chara.position = "2";
-            chara.setPositionIcon(R.drawable.position_middle);
+//            chara.setPositionIcon(R.drawable.position_middle);
+            try {
+                chara.setCharaIcon(ImageIO.read(new File("src\\main\\resources\\position_middle.webp")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if(search_area_width > 600) {
             chara.position = "3";
-            chara.setPositionIcon(R.drawable.position_rear);
+//            chara.setPositionIcon(R.drawable.position_rear);
+            try {
+                chara.setCharaIcon(ImageIO.read(new File("src\\main\\resources\\position_rear.webp")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

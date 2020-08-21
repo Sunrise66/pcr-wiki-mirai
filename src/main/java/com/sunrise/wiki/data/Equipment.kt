@@ -1,8 +1,7 @@
-package com.github.malitsplus.shizurunotes.data
+package com.sunrise.wiki.data
 
-import com.github.malitsplus.shizurunotes.R
-import com.github.malitsplus.shizurunotes.common.I18N
-import com.github.malitsplus.shizurunotes.common.Statics
+import com.sunrise.wiki.common.I18N
+import com.sunrise.wiki.common.Statics
 
 class Equipment(
     val equipmentId: Int,
@@ -57,7 +56,7 @@ class Equipment(
 
     companion object {
         val getNull = Equipment(999999,
-            I18N.getString(R.string.unimplemented),
+            I18N.getString("unimplemented"),
             "",
             0,
             0,

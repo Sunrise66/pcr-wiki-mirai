@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 public class LoopTriggerAction extends ActionParameter {
 
@@ -45,7 +45,7 @@ public class LoopTriggerAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         switch (triggerType){
             case damaged:
-                return I18N.getString(R.string.Condition_s1_chance_use_d2_when_takes_damage_within_s3_sec,
+                return I18N.getString("Condition_s1_chance_use_d2_when_takes_damage_within_s3_sec",
                         buildExpression(level, property), actionDetail2 % 10, actionValue4);
             default:
                 return super.localizedDetail(level, property);

@@ -1,8 +1,8 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 public class KnockAction extends ActionParameter {
 
@@ -43,13 +43,13 @@ public class KnockAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         switch (knockType){
             case upDown:
-                return I18N.getString(R.string.Knock_s1_up_d2, targetParameter.buildTargetClause(), (int)actionValue1);
+                return I18N.getString("Knock_s1_up_d2", targetParameter.buildTargetClause(), (int)actionValue1);
             case back:
             case backLimited:
                 if(actionValue1 >= 0)
-                    return I18N.getString(R.string.Knock_s1_away_d2, targetParameter.buildTargetClause(), (int)actionValue1);
+                    return I18N.getString("Knock_s1_away_d2", targetParameter.buildTargetClause(), (int)actionValue1);
                 else
-                    return I18N.getString(R.string.Draw_s1_toward_self_d2, targetParameter.buildTargetClause(), (int)-actionValue1);
+                    return I18N.getString("Draw_s1_toward_self_d2", targetParameter.buildTargetClause(), (int)-actionValue1);
             default:
                 return super.localizedDetail(level, property);
         }

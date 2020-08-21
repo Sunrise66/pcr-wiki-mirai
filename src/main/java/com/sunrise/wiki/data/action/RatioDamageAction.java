@@ -1,8 +1,9 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
+
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
 
 import java.math.RoundingMode;
 
@@ -43,10 +44,10 @@ public class RatioDamageAction extends ActionParameter {
     public String localizedDetail(int level, Property property) {
         switch (hptype){
             case max:
-                return I18N.getString(R.string.Deal_damage_equal_to_s1_of_target_max_HP_to_s2,
+                return I18N.getString("Deal_damage_equal_to_s1_of_target_max_HP_to_s2",
                         buildExpression(level, RoundingMode.UNNECESSARY, property), targetParameter.buildTargetClause());
             case current:
-                return I18N.getString(R.string.Deal_damage_equal_to_s1_of_target_current_HP_to_s2,
+                return I18N.getString("Deal_damage_equal_to_s1_of_target_current_HP_to_s2",
                         buildExpression(level, RoundingMode.UNNECESSARY, property), targetParameter.buildTargetClause());
             default:
                 return super.localizedDetail(level, property);

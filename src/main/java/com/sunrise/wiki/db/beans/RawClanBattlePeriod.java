@@ -1,6 +1,6 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.ClanBattlePeriod;
+import com.sunrise.wiki.data.ClanBattlePeriod;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

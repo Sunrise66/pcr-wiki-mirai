@@ -1,7 +1,7 @@
 package com.sunrise.wiki.db.beans;
 
-import com.github.malitsplus.shizurunotes.data.Skill;
-import com.github.malitsplus.shizurunotes.data.action.ActionRaw;
+import com.sunrise.wiki.data.Skill;
+
 
 public class RawSkillAction {
 

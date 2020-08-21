@@ -1,9 +1,10 @@
 package com.sunrise.wiki.data.action;
 
-import com.github.malitsplus.shizurunotes.R;
-import com.github.malitsplus.shizurunotes.common.I18N;
-import com.github.malitsplus.shizurunotes.data.Property;
-import com.github.malitsplus.shizurunotes.data.PropertyKey;
+
+
+import com.sunrise.wiki.common.I18N;
+import com.sunrise.wiki.data.Property;
+import com.sunrise.wiki.data.PropertyKey;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -35,11 +36,11 @@ public class RegenerationAction extends ActionParameter {
         public String description(){
             switch (this){
                 case hp:
-                    return I18N.getString(R.string.HP);
+                    return I18N.getString("HP");
                 case tp:
-                    return I18N.getString(R.string.TP);
+                    return I18N.getString("TP");
                 default:
-                    return I18N.getString(R.string.Unknown);
+                    return I18N.getString("Unknown");
             }
         }
     }
@@ -67,7 +68,7 @@ public class RegenerationAction extends ActionParameter {
 
     @Override
     public String localizedDetail(int level, Property property) {
-        return I18N.getString(R.string.Restore_s1_s2_s3_per_second_for_s4_sec,
+        return I18N.getString("Restore_s1_s2_s3_per_second_for_s4_sec",
                 targetParameter.buildTargetClause(),
                 buildExpression(level, property),
                 regenerationType.description(),
