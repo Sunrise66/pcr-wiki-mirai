@@ -36,4 +36,20 @@ public class Statics {
     public static final String APP_UPDATE_LOG = APP_RAW + "/update_log.json";
     public static final String APP_PACKAGE = "https://github.com/MalitsPlus/ShizuruNotes/releases/latest/download/shizurunotes-release.apk";
     public static final String APK_NAME = "shizurunotes-release.apk";
+
+    //部分用户设置
+    public static boolean EXPRESSION_STYLE = false;
+    public static String DB_FILE_PATH = "";
+    public static String USER_LOC = "JP";
+
+    public static void setExpressionStyle(boolean expressionStyle) {
+        EXPRESSION_STYLE = expressionStyle;
+    }
+    public static void setDbFilePath(String dbFilePath) {
+        DB_FILE_PATH = dbFilePath;
+    }
+
+    public static void setUserLoc(String userLoc) {
+        USER_LOC = userLoc;
+    }
 }

@@ -1,6 +1,8 @@
 package com.sunrise.wiki.res.values;
 
 public class StringsCN {
+    public static String space_modifier = " %s  ";
+    public static String space_modifier_2 = "       %s      ";
     public static String app_name = "静流笔记";
     public static String app_full_name = "静流笔记";
     public static String title_chara_list = "角色";

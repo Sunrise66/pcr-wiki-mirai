@@ -33,6 +33,7 @@ class PluginMain extends PluginBase {
     private String LATEST_VERSION_URL;
     private String location;
     private String DB_FILE_NAME_COMPRESSED;
+    private String DB_FILE_NAME;
     private String DB_FILE_COMPRESSED_PATH;
     private String DB_VERSION_INFO_PATH;
     private Long dbVersion;
@@ -51,14 +52,20 @@ class PluginMain extends PluginBase {
             this.DB_FILE_URL = Statics.DB_FILE_URL_JP;
             this.LATEST_VERSION_URL = Statics.LATEST_VERSION_URL_JP;
             this.DB_FILE_NAME_COMPRESSED = Statics.DB_FILE_NAME_COMPRESSED_JP;
+            this.DB_FILE_NAME = Statics.DB_FILE_NAME_JP;
+            Statics.setUserLoc("JP");
         } else if ("CN".equals(this.location)) {
             this.DB_FILE_URL = Statics.DB_FILE_URL_CN;
             this.LATEST_VERSION_URL = Statics.LATEST_VERSION_URL_CN;
             this.DB_FILE_NAME_COMPRESSED = Statics.DB_FILE_NAME_COMPRESSED_CN;
+            this.DB_FILE_NAME = Statics.DB_FILE_NAME_CN;
+            Statics.setUserLoc("CN");
         }
 
         this.DB_FILE_COMPRESSED_PATH = getDataFolder().getPath() + "\\" + this.DB_FILE_NAME_COMPRESSED;
         this.DB_VERSION_INFO_PATH = getDataFolder().getPath() + "\\" + "dbVersion.json";
+
+        Statics.setDbFilePath(getDataFolder().getPath()+"\\" + this.DB_FILE_NAME);
 
         //如果用户设置了自动升级，则每隔24小时检查一次版本，否则只在加载插件时运行一次
         if (autoUpdate) {
