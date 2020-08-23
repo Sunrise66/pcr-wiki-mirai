@@ -1,13 +1,22 @@
 package com.sunrise.wiki;
 
+import com.alibaba.fastjson.JSON;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import com.luciad.imageio.webp.WebPReadParam;
 import com.sunrise.wiki.common.Statics;
+import com.sunrise.wiki.db.DBHelper;
+import com.sunrise.wiki.db.beans.RawSkillAction;
+import com.sunrise.wiki.db.beans.RawSkillData;
+import com.sunrise.wiki.db.beans.RawUnitBasic;
+import com.sunrise.wiki.db.beans.RawUnitSkillData;
 import com.sunrise.wiki.https.MyCallBack;
 import com.sunrise.wiki.https.MyOKHttp;
 import com.sunrise.wiki.utils.BrotliUtils;
 import kotlinx.coroutines.Job;
+import kotlinx.serialization.json.JsonArray;
 import net.mamoe.mirai.console.plugins.Config;
 import net.mamoe.mirai.console.plugins.PluginBase;
 import net.mamoe.mirai.contact.Contact;
@@ -18,11 +27,16 @@ import net.mamoe.mirai.message.data.*;
 import okhttp3.Call;
 import okhttp3.Response;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -36,6 +50,7 @@ class PluginMain extends PluginBase {
     private String DB_FILE_NAME;
     private String DB_FILE_COMPRESSED_PATH;
     private String DB_VERSION_INFO_PATH;
+    private Map<String, List<String>> charaNameMap;
     private Long dbVersion;
     private boolean autoUpdate;
     private boolean isReady = false;
@@ -65,21 +80,180 @@ class PluginMain extends PluginBase {
         this.DB_FILE_COMPRESSED_PATH = getDataFolder().getPath() + "\\" + this.DB_FILE_NAME_COMPRESSED;
         this.DB_VERSION_INFO_PATH = getDataFolder().getPath() + "\\" + "dbVersion.json";
 
-        Statics.setDbFilePath(getDataFolder().getPath()+"\\" + this.DB_FILE_NAME);
+        Statics.setDbFilePath(getDataFolder().getPath() + "\\" + this.DB_FILE_NAME);
 
         //如果用户设置了自动升级，则每隔24小时检查一次版本，否则只在加载插件时运行一次
         if (autoUpdate) {
-            Objects.requireNonNull(getScheduler()).repeat(this::checkDBVersion,1000*60*60*24);
-        }else {
+            Objects.requireNonNull(getScheduler()).repeat(this::checkDBVersion, 1000 * 60 * 60 * 24);
+        } else {
             Objects.requireNonNull(getScheduler()).async(this::checkDBVersion);
+        }
+
+        //读取花名册
+        File nicknameFile = new File(getDataFolder() + "\\" + "_pcr_data.json");
+        try {
+            charaNameMap = new HashMap<>();
+            charaNameMap = JSON.parseObject(new FileInputStream(nicknameFile), charaNameMap.getClass());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         getLogger().info("Plugin loaded!");
     }
 
     public void onEnable() {
-
+        this.getEventListener().subscribeAlways(GroupMessageEvent.class, (GroupMessageEvent event) -> {
+            String message = event.getMessage().toString();
+            if (message.contains("查询角色")) {
+                getLogger().info(message);
+//                System.out.println(message.substring(message.indexOf("查询角色")+4));
+                String charaName = message.substring(message.indexOf("查询角色") + 4).toLowerCase().trim();
+                if (null == charaName || "".equals(charaName)) {
+                    event.getGroup().sendMessage("请输入\"查询角色（空格）角色名\"进行查询");
+                } else {
+                    int charaId = getIdByName(charaName);
+                    if (charaId == 100001) {
+                        event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
+                    } else {
+                        getCharaInfo(charaId, event);
+                    }
+                }
+            } else if (message.contains("角色技能")) {
+                getLogger().info(message);
+                String charaName = message.substring(message.indexOf("角色技能") + 4).toLowerCase().trim();
+                if (null == charaName || "".equals(charaName)) {
+                    event.getGroup().sendMessage("请输入\"角色技能（空格）角色名\"进行查询");
+                } else {
+                    int charaId = getIdByName(charaName);
+                    if (charaId == 100001) {
+                        event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
+                    } else {
+                        getCharaSkills(charaId, event);
+                    }
+                }
+            }
+        });
         getLogger().info("Plugin enabled!");
+    }
+
+    /*************************指令方法区*************************************/
+
+    /**
+     * 获取角色信息
+     *
+     * @param charaId 角色id
+     * @param event
+     */
+    public void getCharaInfo(int charaId, GroupMessageEvent event) {
+        if (!checkEnable(event)) {
+            return;
+        }
+        At at = new At(event.getSender());
+        StringBuffer sb = new StringBuffer();
+        DBHelper helper = DBHelper.get();
+        RawUnitBasic info = helper.getCharaInfo(charaId);
+        File imgPath = new File(getDataFolder() + "\\" + "images"+"\\"+"unitIcons");
+        if (!imgPath.exists()) {
+            imgPath.mkdir();
+        }
+        if (null == info) {
+            event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
+            return;
+        }
+//        File webp = new File(getDataFolder() + "\\" + "images" + "\\" + info.prefab_id + 30 + ".webp");
+        File png = new File(getDataFolder() + "\\" + "images" + "\\" +"unitIcons"+"\\"+ info.prefab_id + 30 + ".png");
+
+        String iconUrl = String.format(Locale.US, Statics.ICON_URL, info.prefab_id + 30);
+        try {
+//            Image image = event.getGroup().uploadImage(new URL("https://i.loli.net/2020/08/22/6GtQMbBghDJEirN.png"));
+            Image image;
+            if (!png.exists()) {
+                HttpURLConnection conn = (HttpURLConnection) new URL(iconUrl).openConnection();
+                InputStream inputStream = conn.getInputStream();
+                BufferedImage bufferedImage = ImageIO.read(inputStream);
+                ImageIO.write(bufferedImage, "png", png);
+                inputStream.close();
+            }
+            image = event.getGroup().uploadImage(png);
+            sb.append(info.unit_name).append("\n");
+            sb.append("真名：").append(info.actual_name).append("\n");
+            sb.append("声优：").append(info.voice).append("\n");
+            sb.append("年龄：").append(info.age).append("\n");
+            sb.append("生日：").append(info.birth_month).append("月").append(info.birth_day).append("日").append("\n");
+            sb.append("身高：").append(info.height).append(" cm").append("\n");
+            sb.append("体重：").append(info.weight).append(" kg").append("\n");
+            sb.append("血型：").append(info.blood_type).append("型").append("\n");
+            sb.append("喜欢的东西：").append(info.favorite).append("\n\n");
+//            sb.append("角色简介：").append(info.self_text).append("\n\n");
+            sb.append("发送 \"角色技能（空格）角色名\"来查询技能").append("\n");
+            sb.append("发送 \"角色出招（空格）角色名\"来查询角色技能循环");
+
+            event.getGroup().sendMessage(at.plus("\n").plus(image.plus("\n" + sb.toString())));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 查询角色技能
+     *
+     * @param charaId 角色id
+     * @param event
+     */
+    public void getCharaSkills(int charaId, GroupMessageEvent event) {
+        if (!checkEnable(event)) {
+            return;
+        }
+        At at = new At(event.getSender());
+        StringBuffer sb = new StringBuffer();
+        DBHelper helper = DBHelper.get();
+        RawUnitSkillData unitSkills = helper.getUnitSkillData(charaId);
+        if(null == unitSkills){
+            event.getGroup().sendMessage(at.plus("\n").plus("您查询的角色可能没有实装哦~"));
+            return;
+        }
+        RawSkillData ex_skill_1 = helper.getSkillData(unitSkills.ex_skill_1);
+        File ex_skill_1_icon = new File(getDataFolder()+"\\"+"images"+"\\"+"skillIcons"+"\\"+charaId+"\\"+ex_skill_1+".png");
+        sb.append("技能1：").append("\n");
+
+
+
+    }
+
+    /**
+     * 查询角色技能循环
+     *
+     * @param charaId 角色id
+     * @param event
+     */
+    public void getCharaSkillRound(int charaId, GroupMessageEvent event) {
+        if (!checkEnable(event)) {
+            return;
+        }
+    }
+    /******************************************************************/
+
+
+    /**
+     * 根据名称查询角色id
+     *
+     * @param name 名称
+     * @return 角色id
+     */
+    public int getIdByName(String name) {
+        Set<String> keySet = charaNameMap.keySet();
+//        System.out.println(charaNameMap.toString());
+        //此处采用嵌套遍历来搜寻id，如果有更优的算法请大佬指出
+        for (String key : keySet) {
+            for (String s : charaNameMap.get(key)) {
+                if (s.equals(name)) {
+                    return Integer.parseInt(key + "01");
+                }
+            }
+        }
+        return 100001;
     }
 
     /**
@@ -190,4 +364,4 @@ class PluginMain extends PluginBase {
         });
     }
 
-}          
+}

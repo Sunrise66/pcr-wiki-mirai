@@ -6,7 +6,7 @@ import java.util.*
 plugins {
     kotlin("jvm") version "1.3.71"
     java
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("com.github.johnrengelman.shadow") version "6.0.0"
 }
 
 group = "sunrise"
@@ -19,24 +19,41 @@ repositories {
     jcenter()
 }
 
-val miraiCoreVersion = "+" // 1.1.3
-val miraiConsoleVersion = "0.5.2" // 1.0-M1
+val miraiCoreVersion = "1.1.3"
+val miraiConsoleVersion = "0.5.2"
+val ktorVersion = "1.3.71"
+val kotlinVersion = "1.3.71"
+val kotlinSerializationVersion = "1.0.0-RC"
+val kotlinx_io_version = "0.1.1"
+
+//fun ktor(id: String, version: String = this@Build_gradle.ktorVersion) = "io.ktor:ktor-$id:$version"
+//fun kotlinx(id: String, version: String) = "org.jetbrains.kotlinx:kotlinx-$id:$version"
 
 dependencies {
     compileOnly(kotlin("stdlib-jdk8"))
     compileOnly("net.mamoe:mirai-core:$miraiCoreVersion")
     compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
+    compileOnly ("org.jetbrains.kotlinx:kotlinx-io-jvm:$kotlinx_io_version")
 
+//    implementation(kotlinx("serialization-cbor", kotlinSerializationVersion))
+    api("net.mamoe:mirai-console:$miraiConsoleVersion")
+
+    implementation("net.mamoe:mirai-serialization-common:$miraiCoreVersion")
+    implementation("net.mamoe:mirai-serialization:$miraiCoreVersion")
     implementation("org.brotli:dec:0.1.2")
-    implementation(files("libs/commons-compress-1.19.jar"))
+    implementation(files("src/main/resources/libs/commons-compress-1.19.jar"))
+    implementation(files("src/main/resources/libs/webp-imageio-core-0.1.3.jar"))
+//    implementation(files("src/main/resources/libs/webp-imageio-0.1.7-SNAPSHOT.jar"))
     implementation("com.squareup.okhttp3:okhttp:4.2.2")
     implementation("org.dom4j:dom4j:2.1.1")
     implementation("org.xerial:sqlite-jdbc:3.32.3.1")
+    implementation("com.alibaba:fastjson:1.2.41")
 
     testImplementation(kotlin("stdlib-jdk8"))
     testImplementation("net.mamoe:mirai-core:$miraiCoreVersion")
     testImplementation("net.mamoe:mirai-core-qqandroid:$miraiCoreVersion")
     testImplementation("net.mamoe:mirai-console:$miraiConsoleVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-io-jvm:$kotlinx_io_version")
 }
 
 java {

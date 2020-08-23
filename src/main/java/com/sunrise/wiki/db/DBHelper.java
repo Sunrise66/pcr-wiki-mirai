@@ -361,7 +361,7 @@ public class DBHelper {
                 .append(",up.favorite")
                 .append(",up.voice")
                 .append(",up.catch_copy")
-                .append("up.self_text")
+                .append(",up.self_text")
                 .append(",IFNULL(au.unit_name, ud.unit_name) 'actual_name'")
                 .append(" FROM unit_data AS ud")
                 .append(" LEFT JOIN unit_profile AS up ON ud.unit_id = up.unit_id")
@@ -369,6 +369,45 @@ public class DBHelper {
                 .append(" WHERE ud.comment <> ''").toString();
 
         return getBeanListByRaw(sql, RawUnitBasic.class);
+    }
+
+    /**
+     * 获取单个角色的基本信息
+     * @param unitId 角色id
+     * @return
+     */
+    public RawUnitBasic getCharaInfo(int unitId){
+        String sql = new StringBuilder()
+                .append("SELECT ud.unit_id")
+                .append(",ud.unit_name")
+                .append(",ud.kana")
+                .append(",ud.prefab_id")
+                .append(",ud.move_speed")
+                .append(",ud.search_area_width")
+                .append(",ud.atk_type")
+                .append(",ud.normal_atk_cast_time")
+                .append(",ud.guild_id")
+                .append(",ud.comment")
+                .append(",ud.start_time")
+                .append(",up.age")
+                .append(",up.guild")
+                .append(",up.race")
+                .append(",up.height")
+                .append(",up.weight")
+                .append(",up.birth_month")
+                .append(",up.birth_day")
+                .append(",up.blood_type")
+                .append(",up.favorite")
+                .append(",up.voice")
+                .append(",up.catch_copy")
+                .append(",up.self_text")
+                .append(",IFNULL(au.unit_name, ud.unit_name) 'actual_name'")
+                .append(" FROM unit_data AS ud")
+                .append(" LEFT JOIN unit_profile AS up ON ud.unit_id = up.unit_id")
+                .append(" LEFT JOIN actual_unit_background AS au ON substr(ud.unit_id,1,4) = substr(au.unit_id,1,4)")
+                .append(" WHERE ud.unit_id=")
+                .append(unitId).toString();
+        return getBeanByRaw(sql,RawUnitBasic.class);
     }
 
     /***

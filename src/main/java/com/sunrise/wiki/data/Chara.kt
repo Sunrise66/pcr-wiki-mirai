@@ -29,7 +29,7 @@ class Chara: Cloneable {
     var guildId: Int = 0
     var normalAtkCastTime: Double = 0.0
     var positionIcon: Int = 0
-    var charaIcon: Image = ImageIO.read(File("src\\main\\resources\\position_middle.webp"))
+    var posIcon: Image = ImageIO.read(File("src\\main\\resources\\position_middle.webp"))
     var maxCharaLevel: Int = 0
     var maxCharaRank: Int = 0
     var maxUniqueEquipmentLevel: Int = 0
