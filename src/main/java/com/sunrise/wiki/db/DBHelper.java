@@ -28,8 +28,8 @@ public class DBHelper {
     public DBHelper(String dbFilePath) throws ClassNotFoundException, SQLException {
         this.dbFile = new File(dbFilePath);
         this.dbFilePath = dbFilePath;
-        connection = getConnection(dbFilePath);
-        statement = getStatement();
+        this.connection = getConnection(dbFilePath);
+        this.statement = getStatement();
     }
 
     public static DBHelper get() {
@@ -685,7 +685,7 @@ public class DBHelper {
         String sql = new StringBuilder()
                 .append("SELECT *")
                 .append(" FROM unit_skill_data")
-                .append(" WHERE unit_id=")
+                .append(" WHERE unit_id =")
                 .append(unitId).toString();
         return getBeanByRaw(sql, RawUnitSkillData.class);
     }

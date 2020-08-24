@@ -4,7 +4,7 @@ import com.sunrise.wiki.data.Chara;
 import com.sunrise.wiki.data.Skill;
 
 public class RawUnitSkillData {
-    public int unid_id;
+    public int unit_id;
     public int union_burst;
     public int main_skill_1;
     public int main_skill_2;

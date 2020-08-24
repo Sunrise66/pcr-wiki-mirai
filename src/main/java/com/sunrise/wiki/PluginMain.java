@@ -8,6 +8,7 @@ import com.google.gson.stream.JsonReader;
 import com.luciad.imageio.webp.WebPReadParam;
 import com.sunrise.wiki.common.Commands;
 import com.sunrise.wiki.common.Statics;
+import com.sunrise.wiki.data.AttackPattern;
 import com.sunrise.wiki.data.Chara;
 import com.sunrise.wiki.data.Skill;
 import com.sunrise.wiki.db.DBHelper;
@@ -17,6 +18,7 @@ import com.sunrise.wiki.db.beans.RawUnitBasic;
 import com.sunrise.wiki.db.beans.RawUnitSkillData;
 import com.sunrise.wiki.https.MyCallBack;
 import com.sunrise.wiki.https.MyOKHttp;
+import com.sunrise.wiki.res.values.StringsCN;
 import com.sunrise.wiki.utils.BrotliUtils;
 import kotlinx.coroutines.Job;
 import kotlinx.serialization.json.JsonArray;
@@ -124,6 +126,21 @@ class PluginMain extends PluginBase {
                 } else {
                     getCharaInfo(charaId, event);
                 }
+            }else if(commandStr.matches(Commands.searchCharaSkillCmd)){
+                //根据正则获取角色名
+                Pattern pattern = Pattern.compile("\\s.{0,10}");
+                Matcher matcher = pattern.matcher(commandStr);
+                String charaName = "";
+                //因指令已经匹配，故此处实际上不需要判断
+                if (matcher.find()) {
+                    charaName = matcher.group().toLowerCase().trim();
+                }
+                int charaId = getIdByName(charaName);
+                if (charaId == 100001) {
+                    event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
+                } else {
+                    getCharaSkills(charaId,event);
+                }
             }
         });
         getLogger().info("Plugin enabled!");
@@ -177,7 +194,7 @@ class PluginMain extends PluginBase {
         if (!checkEnable(event)) {
             return;
         }
-        Image userIcon = getCharaIcon(charaId, event);
+        Image charaIcon = getCharaIcon(charaId, event);
         Image ubIcon;
         Image s1Icon;
         Image s2Icon;
@@ -185,20 +202,26 @@ class PluginMain extends PluginBase {
         At at = new At(event.getSender());
         StringBuffer sb = new StringBuffer();
         DBHelper helper = DBHelper.get();
-        RawUnitBasic info = helper.getCharaInfo(charaId);
+        RawUnitSkillData info = helper.getUnitSkillData(charaId);
         //获取角色对象，以获得更多信息
         Chara chara = new Chara();
-        info.setCharaBasic(chara);
-        Message message = at;
+        info.setCharaSkillList(chara);
+        MessageChain messages = at.plus("\n").plus(charaIcon);
         List<Skill> skills = chara.getSkills();
+        System.out.println(skills.toString());
         for (Skill skill : skills) {
-            if (skill.getSkillClass().equals(Skill.SkillClass.UB)) {
+            System.out.println(skill.getSkillClass().description());
+            if (skill.getSkillClass().description().equals(StringsCN.union_burst)) {
                 ubIcon = getSkillIcon(charaId,skill.getSkillId(),skill.iconUrl,event);
-                sb.append("UB:").append("\n");
-                message.plus(sb.toString()).plus(ubIcon);
-
+                messages.plus(skill.getSkillClass().description()+"\n");
+                messages.plus(ubIcon).plus("\n");
+                messages.plus(skill.getSkillName()+"\n");
+                messages.plus("技能描述：\n").plus(skill.getDescription()).plus("\n");
+                messages.plus("待机时间：").plus(skill.getCastTimeText());
+                messages.plus("技能动作：\n").plus(skill.getActionDescriptions().toString()+"\n");
             }
         }
+        event.getGroup().sendMessage(messages);
     }
 
     /**
