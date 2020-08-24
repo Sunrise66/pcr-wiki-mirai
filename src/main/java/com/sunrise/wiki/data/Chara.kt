@@ -3,6 +3,7 @@ package com.sunrise.wiki.data
 import com.sunrise.wiki.common.I18N
 import com.sunrise.wiki.data.action.PassiveAction
 import java.awt.Image
+import java.awt.image.BufferedImage
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -29,7 +30,7 @@ class Chara: Cloneable {
     var guildId: Int = 0
     var normalAtkCastTime: Double = 0.0
     var positionIcon: Int = 0
-    var posIcon: Image = ImageIO.read(File("src\\main\\resources\\position_middle.webp"))
+    var posIcon: BufferedImage = ImageIO.read(File(this.javaClass.classLoader.getResource("position_middle.png").path))
     var maxCharaLevel: Int = 0
     var maxCharaRank: Int = 0
     var maxUniqueEquipmentLevel: Int = 0

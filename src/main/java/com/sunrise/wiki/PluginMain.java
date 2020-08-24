@@ -6,7 +6,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.luciad.imageio.webp.WebPReadParam;
+import com.sunrise.wiki.common.Commands;
 import com.sunrise.wiki.common.Statics;
+import com.sunrise.wiki.data.Chara;
+import com.sunrise.wiki.data.Skill;
 import com.sunrise.wiki.db.DBHelper;
 import com.sunrise.wiki.db.beans.RawSkillAction;
 import com.sunrise.wiki.db.beans.RawSkillData;
@@ -39,6 +42,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class PluginMain extends PluginBase {
 
@@ -103,33 +108,21 @@ class PluginMain extends PluginBase {
 
     public void onEnable() {
         this.getEventListener().subscribeAlways(GroupMessageEvent.class, (GroupMessageEvent event) -> {
-            String message = event.getMessage().toString();
-            if (message.contains("查询角色")) {
-                getLogger().info(message);
-//                System.out.println(message.substring(message.indexOf("查询角色")+4));
-                String charaName = message.substring(message.indexOf("查询角色") + 4).toLowerCase().trim();
-                if (null == charaName || "".equals(charaName)) {
-                    event.getGroup().sendMessage("请输入\"查询角色（空格）角色名\"进行查询");
-                } else {
-                    int charaId = getIdByName(charaName);
-                    if (charaId == 100001) {
-                        event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
-                    } else {
-                        getCharaInfo(charaId, event);
-                    }
+            String commandStr = event.getMessage().contentToString();
+            if (commandStr.matches(Commands.searchCharaCmd)) {
+                //根据正则获取角色名
+                Pattern pattern = Pattern.compile("\\s.{0,10}");
+                Matcher matcher = pattern.matcher(commandStr);
+                String charaName = "";
+                //因指令已经匹配，故此处实际上不需要判断
+                if (matcher.find()) {
+                    charaName = matcher.group().toLowerCase().trim();
                 }
-            } else if (message.contains("角色技能")) {
-                getLogger().info(message);
-                String charaName = message.substring(message.indexOf("角色技能") + 4).toLowerCase().trim();
-                if (null == charaName || "".equals(charaName)) {
-                    event.getGroup().sendMessage("请输入\"角色技能（空格）角色名\"进行查询");
+                int charaId = getIdByName(charaName);
+                if (charaId == 100001) {
+                    event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
                 } else {
-                    int charaId = getIdByName(charaName);
-                    if (charaId == 100001) {
-                        event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
-                    } else {
-                        getCharaSkills(charaId, event);
-                    }
+                    getCharaInfo(charaId, event);
                 }
             }
         });
@@ -152,47 +145,25 @@ class PluginMain extends PluginBase {
         StringBuffer sb = new StringBuffer();
         DBHelper helper = DBHelper.get();
         RawUnitBasic info = helper.getCharaInfo(charaId);
-        File imgPath = new File(getDataFolder() + "\\" + "images"+"\\"+"unitIcons");
-        if (!imgPath.exists()) {
-            imgPath.mkdir();
-        }
         if (null == info) {
             event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
             return;
         }
-//        File webp = new File(getDataFolder() + "\\" + "images" + "\\" + info.prefab_id + 30 + ".webp");
-        File png = new File(getDataFolder() + "\\" + "images" + "\\" +"unitIcons"+"\\"+ info.prefab_id + 30 + ".png");
+        Image image = getCharaIcon(info.prefab_id, event);
+        sb.append(info.unit_name).append("\n");
+        sb.append("真名：").append(info.actual_name).append("\n");
+        sb.append("声优：").append(info.voice).append("\n");
+        sb.append("年龄：").append(info.age).append("岁").append("\n");
+        sb.append("生日：").append(info.birth_month).append("月").append(info.birth_day).append("日").append("\n");
+        sb.append("身高：").append(info.height).append(" cm").append("\n");
+        sb.append("体重：").append(info.weight).append(" kg").append("\n");
+        sb.append("血型：").append(info.blood_type).append("型").append("\n");
+        sb.append("喜好：").append(info.favorite).append("\n");
+        sb.append("简介：").append(info.comment.replace("\\n", "\n")).append("\n\n");
+        sb.append("发送 \"角色技能（空格）角色名\"来查询技能").append("\n");
+        sb.append("发送 \"角色出招（空格）角色名\"来查询角色技能循环");
 
-        String iconUrl = String.format(Locale.US, Statics.ICON_URL, info.prefab_id + 30);
-        try {
-//            Image image = event.getGroup().uploadImage(new URL("https://i.loli.net/2020/08/22/6GtQMbBghDJEirN.png"));
-            Image image;
-            if (!png.exists()) {
-                HttpURLConnection conn = (HttpURLConnection) new URL(iconUrl).openConnection();
-                InputStream inputStream = conn.getInputStream();
-                BufferedImage bufferedImage = ImageIO.read(inputStream);
-                ImageIO.write(bufferedImage, "png", png);
-                inputStream.close();
-            }
-            image = event.getGroup().uploadImage(png);
-            sb.append(info.unit_name).append("\n");
-            sb.append("真名：").append(info.actual_name).append("\n");
-            sb.append("声优：").append(info.voice).append("\n");
-            sb.append("年龄：").append(info.age).append("\n");
-            sb.append("生日：").append(info.birth_month).append("月").append(info.birth_day).append("日").append("\n");
-            sb.append("身高：").append(info.height).append(" cm").append("\n");
-            sb.append("体重：").append(info.weight).append(" kg").append("\n");
-            sb.append("血型：").append(info.blood_type).append("型").append("\n");
-            sb.append("喜欢的东西：").append(info.favorite).append("\n\n");
-//            sb.append("角色简介：").append(info.self_text).append("\n\n");
-            sb.append("发送 \"角色技能（空格）角色名\"来查询技能").append("\n");
-            sb.append("发送 \"角色出招（空格）角色名\"来查询角色技能循环");
-
-            event.getGroup().sendMessage(at.plus("\n").plus(image.plus("\n" + sb.toString())));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        event.getGroup().sendMessage(at.plus("\n").plus(image.plus("\n" + sb.toString())));
 
     }
 
@@ -206,20 +177,28 @@ class PluginMain extends PluginBase {
         if (!checkEnable(event)) {
             return;
         }
+        Image userIcon = getCharaIcon(charaId, event);
+        Image ubIcon;
+        Image s1Icon;
+        Image s2Icon;
+        Image exIcon;
         At at = new At(event.getSender());
         StringBuffer sb = new StringBuffer();
         DBHelper helper = DBHelper.get();
-        RawUnitSkillData unitSkills = helper.getUnitSkillData(charaId);
-        if(null == unitSkills){
-            event.getGroup().sendMessage(at.plus("\n").plus("您查询的角色可能没有实装哦~"));
-            return;
+        RawUnitBasic info = helper.getCharaInfo(charaId);
+        //获取角色对象，以获得更多信息
+        Chara chara = new Chara();
+        info.setCharaBasic(chara);
+        Message message = at;
+        List<Skill> skills = chara.getSkills();
+        for (Skill skill : skills) {
+            if (skill.getSkillClass().equals(Skill.SkillClass.UB)) {
+                ubIcon = getSkillIcon(charaId,skill.getSkillId(),skill.iconUrl,event);
+                sb.append("UB:").append("\n");
+                message.plus(sb.toString()).plus(ubIcon);
+
+            }
         }
-        RawSkillData ex_skill_1 = helper.getSkillData(unitSkills.ex_skill_1);
-        File ex_skill_1_icon = new File(getDataFolder()+"\\"+"images"+"\\"+"skillIcons"+"\\"+charaId+"\\"+ex_skill_1+".png");
-        sb.append("技能1：").append("\n");
-
-
-
     }
 
     /**
@@ -233,8 +212,66 @@ class PluginMain extends PluginBase {
             return;
         }
     }
+
     /******************************************************************/
 
+    /**
+     * 获取技能图标
+     * @param unitId 角色id
+     * @param skillId 技能id
+     * @param iconUrl 图标链接
+     * @param event
+     * @return
+     */
+    private Image getSkillIcon(int unitId, int skillId, String iconUrl, GroupMessageEvent event) {
+        File skillIconPath = new File(getDataFolder() + "\\images\\skillIcons\\" + unitId);
+        File png = new File(getDataFolder() + "\\images\\skillIcons\\" + unitId + "\\" + skillId + ".png");
+        return getIconWithPng(iconUrl,skillIconPath,png,event);
+    }
+
+    /**
+     * 获取角色头像
+     *
+     * @param prefab_id 头像id
+     * @param event
+     * @return
+     */
+    private Image getCharaIcon(int prefab_id, GroupMessageEvent event) {
+        File unitIconsPath = new File(getDataFolder() + "\\" + "images" + "\\" + "unitIcons");
+        File png = new File(getDataFolder() + "\\" + "images" + "\\" + "unitIcons" + "\\" + prefab_id + 30 + ".png");
+        String iconUrl = String.format(Locale.US, Statics.ICON_URL, prefab_id + 30);
+        return getIconWithPng(iconUrl,unitIconsPath,png,event);
+    }
+
+    /**
+     * 获取png格式的icon
+     * @param iconUrl 图片链接
+     * @param savePath 图片存储目录
+     * @param target 图片完整存储路径，包括文件名
+     * @param event
+     * @return
+     */
+    private Image getIconWithPng(String iconUrl, File savePath,File target, GroupMessageEvent event) {
+        if(!savePath.exists()){
+            savePath.mkdirs();
+        }
+        Image image;
+        try {
+            if(!target.exists()){
+                HttpURLConnection conn = (HttpURLConnection) new URL(iconUrl).openConnection();
+                conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+                InputStream inputStream = conn.getInputStream();
+                BufferedImage bufferedImage = ImageIO.read(inputStream);
+                ImageIO.write(bufferedImage, "png", target);
+                inputStream.close();
+            }
+            image = event.getGroup().uploadImage(target);
+            return image;
+        } catch (Exception e) {
+            getLogger().debug(e);
+            return null;
+        }
+    }
 
     /**
      * 根据名称查询角色id

@@ -17,6 +17,7 @@ public class DBHelper {
     private Statement statement;
     private String dbFilePath;
 
+    private static DBHelper dbHelper = null;
     /**
      * 构造函数
      *
@@ -32,11 +33,16 @@ public class DBHelper {
     }
 
     public static DBHelper get() {
-        try {
-            return new DBHelper(Statics.DB_FILE_PATH);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-            return null;
+        if(dbHelper==null){
+            try {
+                dbHelper = new DBHelper(Statics.DB_FILE_PATH);
+                return dbHelper;
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }else {
+            return dbHelper;
         }
     }
 

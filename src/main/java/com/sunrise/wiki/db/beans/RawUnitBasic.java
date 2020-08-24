@@ -86,7 +86,8 @@ public class RawUnitBasic {
             chara.position = "1";
 //            chara.setPositionIcon(R.drawable.position_forward);
             try {
-                chara.setPosIcon(ImageIO.read(new File("src\\main\\resources\\position_forward.webp")));
+                File position_forward = new File(this.getClass().getClassLoader().getResource("position_forward.png").getPath());
+                chara.setPosIcon(ImageIO.read(position_forward));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -94,7 +95,8 @@ public class RawUnitBasic {
             chara.position = "2";
 //            chara.setPositionIcon(R.drawable.position_middle);
             try {
-                chara.setPosIcon(ImageIO.read(new File("src\\main\\resources\\position_middle.webp")));
+                File position_middle = new File(this.getClass().getClassLoader().getResource("position_middle.png").getPath());
+                chara.setPosIcon(ImageIO.read(position_middle));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -102,7 +104,8 @@ public class RawUnitBasic {
             chara.position = "3";
 //            chara.setPositionIcon(R.drawable.position_rear);
             try {
-                chara.setPosIcon(ImageIO.read(new File("src\\main\\resources\\position_rear.webp")));
+                File position_rear = new File(this.getClass().getClassLoader().getResource("position_rear.png").getPath());
+                chara.setPosIcon(ImageIO.read(position_rear));
             } catch (IOException e) {
                 e.printStackTrace();
             }

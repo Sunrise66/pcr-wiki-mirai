@@ -2,6 +2,7 @@ package com.sunrise.wiki.data
 
 import com.sunrise.wiki.db.DBHelper
 import java.awt.Image
+import java.awt.image.BufferedImage
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -30,20 +31,20 @@ class ClanBattlePeriod(
     val iconBoss4 = phaseList[0].bossList[3].iconUrl
     val iconBoss5 = phaseList[0].bossList[4].iconUrl
 
-    val zodiacImage: Image = when(startTime.monthValue){
-        1 ->ImageIO.read(File("src\\main\\resources\\zodiac_aquarious.webp"))
-        2 ->ImageIO.read(File("src\\main\\resources\\zodiac_pisces.webp"))
-        3 ->ImageIO.read(File("src\\main\\resources\\zodiac_aries.webp"))
-        4 ->ImageIO.read(File("src\\main\\resources\\zodiac_taurus.webp"))
-        5 ->ImageIO.read(File("src\\main\\resources\\zodiac_gemini.webp"))
-        6 ->ImageIO.read(File("src\\main\\resources\\zodiac_cancer.webp"))
-        7 ->ImageIO.read(File("src\\main\\resources\\zodiac_leo.webp"))
-        8 ->ImageIO.read(File("src\\main\\resources\\zodiac_virgo.webp"))
-        9 ->ImageIO.read(File("src\\main\\resources\\zodiac_libra.webp"))
-        10 ->ImageIO.read(File("src\\main\\resources\\zodiac_scorpio.webp"))
-        11 ->ImageIO.read(File("src\\main\\resources\\zodiac_sagittarious.webp"))
-        12 ->ImageIO.read(File("src\\main\\resources\\zodiac_capricorn.webp"))
-        else -> ImageIO.read(File("src\\main\\resources\\mic_chara_icon_error.webp"))
+    val zodiacImage: BufferedImage = when(startTime.monthValue){
+        1 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_aquarious.png").path))
+        2 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_pisces.png").path))
+        3 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_aries.png").path))
+        4 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_taurus.png").path))
+        5 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_gemini.png").path))
+        6 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_cancer.png").path))
+        7 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_leo.png").path))
+        8 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_virgo.png").path))
+        9 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_libra.png").path))
+        10 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_scorpio.png").path))
+        11 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_sagittarious.png").path))
+        12 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_capricorn.png").path))
+        else -> ImageIO.read(File(this.javaClass.classLoader.getResource("mic_chara_icon_place_holder.png").path))
     }
 //    val zodiacImage: Int? = when(startTime.monthValue){
 //        1 -> R.drawable.zodiac_aquarious
