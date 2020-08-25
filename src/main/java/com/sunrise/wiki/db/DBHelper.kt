@@ -23,15 +23,15 @@ class DBHelper private constructor(var dbFilePath: String) {
         @Volatile
         private lateinit var instance: DBHelper
 
-        fun with(dbFilePath: String): DBHelper {
+        private fun with(dbFilePath: String): DBHelper {
             synchronized(DBHelper::class.java) {
-                instance = DBHelper(Statics.DB_FILE_PATH)
+                instance = DBHelper(dbFilePath)
             }
             return instance
         }
 
         @JvmStatic
-        fun get(): DBHelper = DBHelper(Statics.DB_FILE_PATH)
+        fun get(): DBHelper = with(Statics.DB_FILE_PATH)
     }
 
     /**

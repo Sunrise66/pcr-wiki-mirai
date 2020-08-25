@@ -11,7 +11,7 @@ import com.sunrise.wiki.data.Property;
 import com.sunrise.wiki.data.Skill;
 import com.sunrise.wiki.data.action.ActionParameter;
 import com.sunrise.wiki.data.action.ActionRaw;
-import com.sunrise.wiki.db.DBHelper;
+import com.sunrise.wiki.db.*;
 import com.sunrise.wiki.db.beans.*;
 import com.sunrise.wiki.https.MyCallBack;
 import com.sunrise.wiki.https.MyOKHttp;
@@ -37,17 +37,17 @@ import java.util.regex.Pattern;
 class PluginMain extends PluginBase {
 
     private Config setting;
-    private String DB_FILE_URL;
-    private String LATEST_VERSION_URL;
     private String location;
-    private String DB_FILE_NAME_COMPRESSED;
-    private String DB_FILE_NAME;
-    private String DB_FILE_COMPRESSED_PATH;
-    private String DB_VERSION_INFO_PATH;
     private Map<String, List<String>> charaNameMap;
     private Long dbVersion;
     private boolean autoUpdate;
     private boolean isReady = false;
+    private List<Chara> charaList;
+    private DBDownloader dbDownloader;
+    private CharaStarter charaStarter;
+    private ClanBattleStarter clanBattleStarter;
+    private EquipmentStarter equipmentStarter;
+    private QuestStarter questStarter;
 
     public void onLoad() {
         this.setting = loadConfig("setting.yml");
@@ -56,30 +56,48 @@ class PluginMain extends PluginBase {
 
         this.location = this.setting.getString("location");
         this.autoUpdate = this.setting.getBoolean("autoUpdate");
+
         if ("JP".equals(this.location)) {
-            this.DB_FILE_URL = Statics.DB_FILE_URL_JP;
-            this.LATEST_VERSION_URL = Statics.LATEST_VERSION_URL_JP;
-            this.DB_FILE_NAME_COMPRESSED = Statics.DB_FILE_NAME_COMPRESSED_JP;
-            this.DB_FILE_NAME = Statics.DB_FILE_NAME_JP;
+            Statics.DB_FILE_URL = Statics.DB_FILE_URL_JP;
+            Statics.LATEST_VERSION_URL = Statics.LATEST_VERSION_URL_JP;
+            Statics.DB_FILE_NAME_COMPRESSED = Statics.DB_FILE_NAME_COMPRESSED_JP;
+            Statics.DB_FILE_NAME = Statics.DB_FILE_NAME_JP;
             Statics.setUserLoc("JP");
         } else if ("CN".equals(this.location)) {
-            this.DB_FILE_URL = Statics.DB_FILE_URL_CN;
-            this.LATEST_VERSION_URL = Statics.LATEST_VERSION_URL_CN;
-            this.DB_FILE_NAME_COMPRESSED = Statics.DB_FILE_NAME_COMPRESSED_CN;
-            this.DB_FILE_NAME = Statics.DB_FILE_NAME_CN;
+            Statics.DB_FILE_URL = Statics.DB_FILE_URL_CN;
+            Statics.LATEST_VERSION_URL = Statics.LATEST_VERSION_URL_CN;
+            Statics.DB_FILE_NAME_COMPRESSED = Statics.DB_FILE_NAME_COMPRESSED_CN;
+            Statics.DB_FILE_NAME = Statics.DB_FILE_NAME_CN;
             Statics.setUserLoc("CN");
         }
+        //一定要在加载完配置之后再初始化此类
+        dbDownloader = new DBDownloader(getDataFolder().getPath(), out -> {
+            if (out.equals("finish")) {
+                equipmentStarter.loadData();
+                equipmentStarter.setCallBack(() -> charaStarter.loadData(equipmentStarter.equipmentMap));
+                charaStarter.setCallBack(() -> {
+                    charaList = charaStarter.charaList;
+                    getLogger().info("角色数据加载完毕");
+                    isReady = true;
+                });
+                clanBattleStarter.loadData();
+                questStarter.loadData();
+            } else {
+                getLogger().info(out);
+            }
+        });
 
-        this.DB_FILE_COMPRESSED_PATH = getDataFolder().getPath() + "\\" + this.DB_FILE_NAME_COMPRESSED;
-        this.DB_VERSION_INFO_PATH = getDataFolder().getPath() + "\\" + "dbVersion.json";
-
-        Statics.setDbFilePath(getDataFolder().getPath() + "\\" + this.DB_FILE_NAME);
+        Statics.setDbFilePath(getDataFolder().getPath() + "\\" + Statics.DB_FILE_NAME);
 
         //如果用户设置了自动升级，则每隔24小时检查一次版本，否则只在加载插件时运行一次
         if (autoUpdate) {
-            Objects.requireNonNull(getScheduler()).repeat(this::checkDBVersion, 1000 * 60 * 60 * 24);
+            getScheduler().repeat(() -> {
+                dbDownloader.checkDBVersion();
+            }, 1000 * 60 * 60 * 24);
         } else {
-            Objects.requireNonNull(getScheduler()).async(this::checkDBVersion);
+            getScheduler().async(() -> {
+                dbDownloader.checkDBVersion();
+            });
         }
 
         //读取花名册
@@ -117,7 +135,7 @@ class PluginMain extends PluginBase {
                 String charaName = "";
                 int lv = 0;
                 int rank = 0;
-                if(matcher.find()){
+                if (matcher.find()) {
                     System.out.println(matcher.group());
                     if (null == matcher.group("name1") && null == matcher.group("name2")) {
                         event.getGroup().sendMessage("请输入正确的指令");
@@ -126,7 +144,7 @@ class PluginMain extends PluginBase {
                     if (null == matcher.group("name1") && null != matcher.group("name2")) {
                         charaName = matcher.group("name2").trim();
                     }
-                    if(null!=matcher.group("name1")){
+                    if (null != matcher.group("name1")) {
                         charaName = matcher.group("name1").trim();
                         lv = Integer.parseInt(matcher.group("lv").trim());
                         rank = Integer.parseInt(matcher.group("rank").substring(4).trim());
@@ -135,7 +153,7 @@ class PluginMain extends PluginBase {
                     if (charaId == 100001) {
                         event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
                     } else {
-                        getCharaSkills(charaId,rank,lv,event);
+                        getCharaSkills(charaId, rank, lv, event);
                     }
                 }
             }
@@ -155,25 +173,31 @@ class PluginMain extends PluginBase {
         if (!checkEnable(event)) {
             return;
         }
+        Chara chara = new Chara();
+        for (Chara it :
+                charaList) {
+            if (charaId == chara.getCharaId()) {
+                chara = it;
+                break;
+            }
+        }
         At at = new At(event.getSender());
         StringBuffer sb = new StringBuffer();
-        DBHelper helper = DBHelper.get();
-        RawUnitBasic info = helper.getCharaInfo(charaId);
-        if (null == info) {
+        if (null == chara) {
             event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
             return;
         }
-        Image image = getCharaIcon(info.prefab_id, event);
-        sb.append(info.unit_name).append("\n");
-        sb.append("真名：").append(info.actual_name).append("\n");
-        sb.append("声优：").append(info.voice).append("\n");
-        sb.append("年龄：").append(info.age).append("岁").append("\n");
-        sb.append("生日：").append(info.birth_month).append("月").append(info.birth_day).append("日").append("\n");
-        sb.append("身高：").append(info.height).append(" cm").append("\n");
-        sb.append("体重：").append(info.weight).append(" kg").append("\n");
-        sb.append("血型：").append(info.blood_type).append("型").append("\n");
-        sb.append("喜好：").append(info.favorite).append("\n");
-        sb.append("简介：").append(info.comment.replace("\\n", "\n")).append("\n\n");
+        Image image = getCharaIcon(chara.getPrefabId(), event);
+        sb.append(chara.getUnitName()).append("\n");
+        sb.append("真名：").append(chara.getActualName()).append("\n");
+        sb.append("声优：").append(chara.getVoice()).append("\n");
+        sb.append("年龄：").append(chara.getAge()).append("岁").append("\n");
+        sb.append("生日：").append(chara.getBirthMonth()).append("月").append(chara.getBirthDate()).append("日").append("\n");
+        sb.append("身高：").append(chara.getHeight()).append(" cm").append("\n");
+        sb.append("体重：").append(chara.getWeight()).append(" kg").append("\n");
+        sb.append("血型：").append(chara.getBloodType()).append("型").append("\n");
+        sb.append("喜好：").append(chara.getFavorite()).append("\n");
+        sb.append("简介：").append(chara.getComment());
         sb.append("发送 \"角色技能（空格）角色名\"来查询技能").append("\n");
         sb.append("发送 \"角色出招（空格）角色名\"来查询角色技能循环");
 
@@ -205,17 +229,16 @@ class PluginMain extends PluginBase {
         RawUnitBasic charaInfo = helper.getCharaInfo(charaId);
         Property storyProperty = new Property();
         List<RawCharaStoryStatus> statusList = helper.getCharaStoryStatus(charaId);
-        for(RawCharaStoryStatus states: statusList){
+        for (RawCharaStoryStatus states : statusList) {
             storyProperty.plusEqual(states.getCharaStoryStatus(chara));
         }
         chara.setStoryProperty(storyProperty);
-        Map<Integer,Property> promotionStatus = new HashMap<>();
+        Map<Integer, Property> promotionStatus = new HashMap<>();
         List<RawPromotionStatus> charaPromotionStatusList = helper.getCharaPromotionStatus(charaId);
-        for(RawPromotionStatus  charaPromotionStatus:charaPromotionStatusList){
-            promotionStatus.put(charaPromotionStatus.promotion_level,charaPromotionStatus.getPromotionStatus());
+        for (RawPromotionStatus charaPromotionStatus : charaPromotionStatusList) {
+            promotionStatus.put(charaPromotionStatus.promotion_level, charaPromotionStatus.getPromotionStatus());
         }
         chara.promotionStatus = promotionStatus;
-
 
 
         charaInfo.setCharaBasic(chara);
@@ -364,100 +387,6 @@ class PluginMain extends PluginBase {
             return false;
         }
         return true;
-    }
-
-    /**
-     * 检查数据库版本信息
-     */
-    private void checkDBVersion() {
-        isReady = false;
-        File DB_VERSION_INFO = new File(DB_VERSION_INFO_PATH);
-        if (!DB_VERSION_INFO.exists()) {
-            dbVersion = 0L;
-            getDBVersion();
-        } else {
-            try {
-                JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(new FileInputStream(DB_VERSION_INFO), StandardCharsets.UTF_8))).getAsJsonObject();
-                dbVersion = object.get("TruthVersion").getAsLong();
-                getDBVersion();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * 下载数据库文件
-     *
-     * @return 是否下载完成
-     */
-    private boolean downloadDB() {
-        boolean finished = false;
-        try {
-            File dbFileCompressed = new File(DB_FILE_COMPRESSED_PATH);
-            HttpURLConnection conn = (HttpURLConnection) new URL(DB_FILE_URL).openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-
-            InputStream inputStream = conn.getInputStream();
-            int maxLength = conn.getContentLength();
-            if (dbFileCompressed.exists()) {
-                dbFileCompressed.delete();
-            }
-            FileOutputStream outputStream = new FileOutputStream(dbFileCompressed);
-            byte[] buf = new byte[1024 * 1024];
-            int numRead;
-            int totalDownload = 0;
-            while (true) {
-                numRead = inputStream.read(buf);
-                totalDownload += numRead;
-                getLogger().info("数据库文件下载进度：" + totalDownload + "/" + maxLength);
-                if (numRead <= 0) {
-                    break;
-                }
-                outputStream.write(buf, 0, numRead);
-            }
-            inputStream.close();
-            outputStream.close();
-            BrotliUtils.deCompress(DB_FILE_COMPRESSED_PATH, true);
-            isReady = true;
-            getLogger().info("数据库缓存文件下载成功！");
-            finished = true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return finished;
-    }
-
-    /**
-     * 获取数据库版本信息及缓存文件
-     */
-    private void getDBVersion() {
-        MyOKHttp.doRequest(LATEST_VERSION_URL, new MyCallBack() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                getLogger().info(e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String lastVersionJson = Objects.requireNonNull(response.body()).string();
-                JsonObject object = JsonParser.parseString(lastVersionJson).getAsJsonObject();
-                Long serverVersion = object.get("TruthVersion").getAsLong();
-                if (!dbVersion.equals(serverVersion)) {
-                    getLogger().info("数据库不是最新版本，开始下载！");
-                    if (downloadDB()) {
-                        File versionInfo = new File(DB_VERSION_INFO_PATH);
-                        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(versionInfo), StandardCharsets.UTF_8));
-                        bw.write(lastVersionJson);
-                        bw.flush();
-                        bw.close();
-                    }
-                } else {
-                    isReady = true;
-                    getLogger().info("数据库文件为最新，准备完毕！");
-                }
-            }
-        });
     }
 
 }
