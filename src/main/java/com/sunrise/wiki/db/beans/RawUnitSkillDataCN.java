@@ -4,7 +4,7 @@ import com.sunrise.wiki.common.Statics;
 import com.sunrise.wiki.data.Chara;
 import com.sunrise.wiki.data.Skill;
 
-public class RawUnitSkillData {
+public class RawUnitSkillDataCN {
     public int unit_id;
     public int union_burst;
     public int main_skill_1;
@@ -35,8 +35,6 @@ public class RawUnitSkillData {
     public int union_burst_evolution;
     public int main_skill_evolution_1;
     public int main_skill_evolution_2;
-    public int sp_skill_evolution_1;
-    public int sp_skill_evolution_2;
 
     public void setCharaSkillList(Chara chara) {
         if (union_burst != 0)
@@ -97,10 +95,5 @@ public class RawUnitSkillData {
             chara.getSkills().add(new Skill(ex_skill_5, Skill.SkillClass.EX5));
         if (ex_skill_evolution_5 != 0)
             chara.getSkills().add(new Skill(ex_skill_evolution_5, Skill.SkillClass.EX5_EVO));
-        if (sp_skill_evolution_1 != 0)
-            chara.getSkills().add(new Skill(sp_skill_evolution_1, Skill.SkillClass.SP1_EVO));
-        if (sp_skill_evolution_2 != 0)
-            chara.getSkills().add(new Skill(sp_skill_evolution_2, Skill.SkillClass.SP2_EVO));
-
     }
 }

@@ -35,7 +35,6 @@ dependencies {
     compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
     compileOnly ("org.jetbrains.kotlinx:kotlinx-io-jvm:$kotlinx_io_version")
 
-//    implementation(kotlinx("serialization-cbor", kotlinSerializationVersion))
     api("net.mamoe:mirai-console:$miraiConsoleVersion")
 
     implementation("net.mamoe:mirai-serialization-common:$miraiCoreVersion")
