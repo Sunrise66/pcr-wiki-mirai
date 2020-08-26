@@ -76,7 +76,15 @@ class DBHelper private constructor(var dbFilePath: String) {
                 val bean = theClass.newInstance()
                 for (f in arrField) {
                     val columnName = f.name
-                    val columnIdx = cursor.findColumn(columnName)
+                    if (columnName == "ailmentMap") {
+                        continue
+                    }
+                    var columnIdx = -1
+                    try {
+                        columnIdx = cursor.findColumn(columnName)
+                    }catch (e:SQLException){
+                        println(e.toString())
+                    }
                     if (columnIdx != -1) {
                         if (!f.isAccessible) {
                             f.isAccessible = true

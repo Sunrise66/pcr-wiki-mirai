@@ -51,7 +51,7 @@ class PluginMain extends PluginBase {
 
     public void onLoad() {
         this.setting = loadConfig("setting.yml");
-        this.setting.setIfAbsent("location", "CN");
+        this.setting.setIfAbsent("location", "JP");
         this.setting.setIfAbsent("autoUpdate", true);
 
         this.location = this.setting.getString("location");
@@ -88,8 +88,8 @@ class PluginMain extends PluginBase {
                 getLogger().info("角色数据加载完毕");
                 isReady = true;
             });
-            clanBattleStarter.loadData();
-            questStarter.loadData();
+//            clanBattleStarter.loadData();
+//            questStarter.loadData();
         });
         Statics.setDbFilePath(getDataFolder().getPath() + "\\" + Statics.DB_FILE_NAME);
 
@@ -104,7 +104,7 @@ class PluginMain extends PluginBase {
             });
         }
 
-        //读取花名册
+        //读取花名册，需提前配置到资源文件夹，花名册由来详见README
         File nicknameFile = new File(getDataFolder() + "\\" + "_pcr_data.json");
         try {
             charaNameMap = new HashMap<>();
@@ -124,7 +124,6 @@ class PluginMain extends PluginBase {
                 Pattern pattern = Pattern.compile("\\s.{0,10}");
                 Matcher matcher = pattern.matcher(commandStr);
                 String charaName = "";
-                //因指令已经匹配，故此处实际上不需要判断
                 if (matcher.find()) {
                     charaName = matcher.group().toLowerCase().trim();
                 }
@@ -157,7 +156,7 @@ class PluginMain extends PluginBase {
                     if (charaId == 100001) {
                         event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
                     } else {
-                        getCharaSkills(charaId, rank, lv, event);
+                        getCharaSkills(charaId, lv, rank, event);
                     }
                 }
             }
@@ -225,61 +224,43 @@ class PluginMain extends PluginBase {
         Image s2Icon;
         Image exIcon;
         At at = new At(event.getSender());
-        StringBuffer sb = new StringBuffer();
-        DBHelper helper = DBHelper.get();
         //获取角色对象，以获得更多信息
-        Chara chara = new Chara();
-        chara.setMaxRarity(5);
-        RawUnitBasic charaInfo = helper.getCharaInfo(charaId);
-        Property storyProperty = new Property();
-        List<RawCharaStoryStatus> statusList = helper.getCharaStoryStatus(charaId);
-        for (RawCharaStoryStatus states : statusList) {
-            storyProperty.plusEqual(states.getCharaStoryStatus(chara));
+        Chara chara = null;
+        for (Chara it : charaList){
+            if(charaId==it.getUnitId()){
+                chara = it;
+                break;
+            }
         }
-        chara.setStoryProperty(storyProperty);
-        Map<Integer, Property> promotionStatus = new HashMap<>();
-        List<RawPromotionStatus> charaPromotionStatusList = helper.getCharaPromotionStatus(charaId);
-        for (RawPromotionStatus charaPromotionStatus : charaPromotionStatusList) {
-            promotionStatus.put(charaPromotionStatus.promotion_level, charaPromotionStatus.getPromotionStatus());
-        }
-        chara.promotionStatus = promotionStatus;
-
-
-        charaInfo.setCharaBasic(chara);
-        if ("CN".equals(Statics.USER_LOC)) {
-            RawUnitSkillDataCN info = helper.getCNUnitSkillData(charaId);
-            info.setCharaSkillList(chara);
-        } else if ("JP".equals(Statics.USER_LOC)) {
-            RawUnitSkillData info = helper.getUnitSkillData(charaId);
-            info.setCharaSkillList(chara);
-        }
+        charaStarter.mSetSelectedChara(chara);
         List<Message> messages = new ArrayList<>();
         messages.add(at);
         messages.add(charaIcon);
         List<Skill> skills = chara.getSkills();
-//        if (lv > chara.getMaxCharaLevel() || lv < 0) {
-//            event.getGroup().sendMessage("当前角色最大Lv为：" + chara.getMaxCharaLevel());
-//            return;
-//        }
-//        if (rank > chara.getMaxCharaRank() || rank < 0) {
-//            event.getGroup().sendMessage("当前角色最大Rank为：" + chara.getMaxCharaRank());
-//            return;
-//        }
+        if (lv > chara.getMaxCharaLevel() || lv < 0) {
+            event.getGroup().sendMessage("当前角色最大Lv为：" + chara.getMaxCharaLevel());
+            return;
+        }
+        if (rank > chara.getMaxCharaRank() || rank < 0) {
+            System.out.println(rank);
+            event.getGroup().sendMessage("当前角色最大Rank为：" + chara.getMaxCharaRank());
+            return;
+        }
         for (Skill skill : skills) {
-            if (lv > 0 && rank > 0) {
-                chara.setCharaProperty(chara.getMaxRarity(), rank, true);
-                skill.setActionDescriptions(lv, chara.charaProperty);
-            }
+//            if (lv > 0 && rank > 0) {
+//                chara.setMaxCharaRank(rank);
+//                chara.setMaxCharaLevel(lv);
+//            }
             if (skill.getSkillClass().getValue().equals(StringsCN.union_burst)) {
                 ubIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
                 messages.add(new PlainText(skill.getSkillClass().getValue() + "\n"));
                 messages.add(ubIcon);
                 messages.add(new PlainText(skill.getSkillName() + "\n"));
                 messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
-                messages.add(new PlainText(skill.getCastTimeText()));
-                if (lv > 0 && rank > 0) {
+                messages.add(new PlainText(skill.getCastTimeText()+"\n"));
+//                if (lv > 0 && rank > 0) {
                     messages.add(new PlainText(skill.getActionDescriptions().toString()));
-                }
+//                }
             }
         }
         event.getGroup().sendMessage(MessageUtils.newChain(messages));
