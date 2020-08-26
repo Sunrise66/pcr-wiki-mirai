@@ -24,7 +24,7 @@ public class DBDownloader {
     private String DB_FILE_COMPRESSED_PATH;
     private String DB_FILE_URL;
 
-    public DBDownloader(String basePath,LogOut logOutCallback) {
+    public DBDownloader(String basePath, LogOut logOutCallback) {
         this.basePath = basePath;
         this.out = logOutCallback;
         this.DB_VERSION_INFO_PATH = basePath + "\\" + "dbVersion.json";
@@ -102,53 +102,87 @@ public class DBDownloader {
      * 获取数据库版本信息及缓存文件
      */
     public void getDBVersion() {
-        OkHttpClient client = new OkHttpClient.Builder().build();
-        Request request = new Request.Builder().url(Statics.LATEST_VERSION_URL).build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                out.out(e.toString());
-            }
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(Statics.LATEST_VERSION_URL).openConnection();
+            conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+            InputStream is = conn.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            String strRead = null;
+            StringBuffer sbf = new StringBuffer();
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String lastVersionJson = Objects.requireNonNull(response.body()).string();
-                JsonObject object = JsonParser.parseString(lastVersionJson).getAsJsonObject();
-                Long serverVersion = object.get("TruthVersion").getAsLong();
-                if (!dbVersion.equals(serverVersion)) {
-                    out.out("数据库不是最新版本，开始下载！");
-                    if (downloadDB()) {
-                        File versionInfo = new File(DB_VERSION_INFO_PATH);
-                        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(versionInfo), StandardCharsets.UTF_8));
-                        bw.write(lastVersionJson);
-                        bw.flush();
-                        bw.close();
+            while ((strRead = reader.readLine()) != null) {
+                sbf.append(strRead);
+                sbf.append("\r\n");
+            }
+            reader.close();
+            String lastVersionJson = sbf.toString();
+            JsonObject object = JsonParser.parseString(lastVersionJson).getAsJsonObject();
+            Long serverVersion = object.get("TruthVersion").getAsLong();
+            if (!dbVersion.equals(serverVersion)) {
+                out.out("数据库不是最新版本，开始下载！");
+                if (downloadDB()) {
+                    File versionInfo = new File(DB_VERSION_INFO_PATH);
+                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(versionInfo), StandardCharsets.UTF_8));
+                    bw.write(lastVersionJson);
+                    bw.flush();
+                    bw.close();
+                    if (null != fcallback) {
+                        this.fcallback.onFinish();
                     }
-                } else {
-                    isReady = true;
-                    out.out("数据库文件为最新，准备完毕！");
+                }
+            } else {
+                isReady = true;
+                out.out("数据库文件为最新，准备完毕！");
+                if (null != fcallback) {
+                    this.fcallback.onFinish();
                 }
             }
-        });
+        } catch (IOException e) {
+            out.out(e.toString());
+        }
+//        OkHttpClient client = new OkHttpClient.Builder().build();
+//        Request request = new Request.Builder().url(Statics.LATEST_VERSION_URL).build();
+//        Call call = client.newCall(request);
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//                out.out(e.toString());
+//            }
+//
+//            @Override
+//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+//                String lastVersionJson = Objects.requireNonNull(response.body()).string();
+//                JsonObject object = JsonParser.parseString(lastVersionJson).getAsJsonObject();
+//                Long serverVersion = object.get("TruthVersion").getAsLong();
+//                if (!dbVersion.equals(serverVersion)) {
+//                    out.out("数据库不是最新版本，开始下载！");
+//                    if (downloadDB()) {
+//                        File versionInfo = new File(DB_VERSION_INFO_PATH);
+//                        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(versionInfo), StandardCharsets.UTF_8));
+//                        bw.write(lastVersionJson);
+//                        bw.flush();
+//                        bw.close();
+//                    }
+//                } else {
+//                    isReady = true;
+//                    out.out("数据库文件为最新，准备完毕！");
+//                }
+//            }
+//        });
     }
 
-    private void doFinish(){
-        if(null!=fcallback){
-            fcallback.onFinish();
-        }
-    }
     private LogOut out;
-    public FinishCallback fcallback;
+    private FinishCallback fcallback;
 
     public void setCallback(FinishCallback callback) {
         this.fcallback = callback;
     }
 
-    public interface FinishCallback{
+    public interface FinishCallback {
         void onFinish();
     }
-    public interface LogOut{
+
+    public interface LogOut {
         void out(String out);
     }
 }

@@ -7,7 +7,7 @@ import kotlin.concurrent.thread
 
 class EquipmentStarter {
     val equipmentFragmentMap = mutableMapOf<Int, EquipmentPiece>()
-    lateinit var equipmentMap : MutableMap<Int, Equipment>
+    val equipmentMap = mutableMapOf<Int, Equipment>()
 
     var selectedEquipment: Equipment? = null
 

@@ -5,7 +5,7 @@ import com.sunrise.wiki.db.beans.MasterQuest
 import kotlin.concurrent.thread
 
 class QuestStarter {
-    lateinit var questList : MutableList<Quest>
+    val questList = mutableListOf<Quest>()
     var includeNormal = false
     var includeHard = false
 

@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 public class RawClanBattlePeriod {
     public int clan_battle_id;
-    public int release_month;
+//    public int release_month;
     public String start_time;
     public String end_time;
 

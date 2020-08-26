@@ -57,6 +57,11 @@ class PluginMain extends PluginBase {
         this.location = this.setting.getString("location");
         this.autoUpdate = this.setting.getBoolean("autoUpdate");
 
+        this.charaStarter = new CharaStarter();
+        this.equipmentStarter = new EquipmentStarter();
+        this.clanBattleStarter = new ClanBattleStarter();
+        this.questStarter = new QuestStarter();
+
         if ("JP".equals(this.location)) {
             Statics.DB_FILE_URL = Statics.DB_FILE_URL_JP;
             Statics.LATEST_VERSION_URL = Statics.LATEST_VERSION_URL_JP;
@@ -72,21 +77,20 @@ class PluginMain extends PluginBase {
         }
         //一定要在加载完配置之后再初始化此类
         dbDownloader = new DBDownloader(getDataFolder().getPath(), out -> {
-            if (out.equals("finish")) {
-                equipmentStarter.loadData();
-                equipmentStarter.setCallBack(() -> charaStarter.loadData(equipmentStarter.equipmentMap));
-                charaStarter.setCallBack(() -> {
-                    charaList = charaStarter.charaList;
-                    getLogger().info("角色数据加载完毕");
-                    isReady = true;
-                });
-                clanBattleStarter.loadData();
-                questStarter.loadData();
-            } else {
-                getLogger().info(out);
-            }
+            getLogger().info(out);
         });
 
+        dbDownloader.setCallback(()->{
+            equipmentStarter.loadData();
+            equipmentStarter.setCallBack(() -> charaStarter.loadData(equipmentStarter.getEquipmentMap()));
+            charaStarter.setCallBack(() -> {
+                charaList = charaStarter.getCharaList();
+                getLogger().info("角色数据加载完毕");
+                isReady = true;
+            });
+            clanBattleStarter.loadData();
+            questStarter.loadData();
+        });
         Statics.setDbFilePath(getDataFolder().getPath() + "\\" + Statics.DB_FILE_NAME);
 
         //如果用户设置了自动升级，则每隔24小时检查一次版本，否则只在加载插件时运行一次
@@ -173,10 +177,10 @@ class PluginMain extends PluginBase {
         if (!checkEnable(event)) {
             return;
         }
-        Chara chara = new Chara();
+        Chara chara = null;
         for (Chara it :
                 charaList) {
-            if (charaId == chara.getCharaId()) {
+            if (charaId == it.getUnitId()) {
                 chara = it;
                 break;
             }
@@ -192,12 +196,12 @@ class PluginMain extends PluginBase {
         sb.append("真名：").append(chara.getActualName()).append("\n");
         sb.append("声优：").append(chara.getVoice()).append("\n");
         sb.append("年龄：").append(chara.getAge()).append("岁").append("\n");
-        sb.append("生日：").append(chara.getBirthMonth()).append("月").append(chara.getBirthDate()).append("日").append("\n");
+        sb.append("生日：").append(chara.getBirthDate()).append("\n");
         sb.append("身高：").append(chara.getHeight()).append(" cm").append("\n");
         sb.append("体重：").append(chara.getWeight()).append(" kg").append("\n");
         sb.append("血型：").append(chara.getBloodType()).append("型").append("\n");
         sb.append("喜好：").append(chara.getFavorite()).append("\n");
-        sb.append("简介：").append(chara.getComment());
+        sb.append("简介：").append(chara.getComment().replace("\\n","\n")).append("\n\n");
         sb.append("发送 \"角色技能（空格）角色名\"来查询技能").append("\n");
         sb.append("发送 \"角色出招（空格）角色名\"来查询角色技能循环");
 

@@ -77,7 +77,7 @@ class Chara: Cloneable {
         } else {
             val calendar = Calendar.getInstance()
             calendar.set(calendar.get(Calendar.YEAR), birthMonth.toInt() - 1, birthDay.toInt())
-            val format = "yyyy-MM-dd"
+            val format = "MM 月 dd 日"
             SimpleDateFormat(format).format(calendar.time)
         }
     }

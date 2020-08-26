@@ -6,7 +6,7 @@ import com.sunrise.wiki.data.Enemy
 import kotlin.concurrent.thread
 
 class ClanBattleStarter {
-    lateinit var periodList : MutableList<ClanBattlePeriod>
+    val periodList = mutableListOf<ClanBattlePeriod>()
     var selectedPeriod: ClanBattlePeriod? = null
     var selectedEnemyList: List<Enemy>? = null
     var selectedMinion: MutableList<Enemy>? = null

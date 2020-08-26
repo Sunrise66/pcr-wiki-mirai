@@ -11,7 +11,7 @@ import kotlin.concurrent.thread
 
 class CharaStarter {
 
-    lateinit var charaList : MutableList<Chara>
+    val charaList = mutableListOf<Chara>()
 
     var maxCharaLevel: Int = 0
     var maxCharaRank: Int = 0
@@ -118,7 +118,11 @@ class CharaStarter {
     }
 
     private fun setUnitSkillData(chara: Chara) {
-        get().getUnitSkillData(chara.unitId)?.setCharaSkillList(chara)
+        if ("JP" == Statics.USER_LOC) {
+            get().getUnitSkillData(chara.unitId)?.setCharaSkillList(chara)
+        }else if("CN" == Statics.USER_LOC){
+            get().getCNUnitSkillData(chara.unitId)?.setCharaSkillList(chara)
+        }
     }
 
     private fun setUnitAttackPattern(chara: Chara) {
@@ -132,7 +136,7 @@ class CharaStarter {
         }
     }
 
-    fun mSetSelectedChara(chara: Chara?){
+    fun mSetSelectedChara(chara: Chara?) {
         chara?.apply {
             skills.forEach {
                 it.setActionDescriptions(chara.maxCharaLevel, chara.charaProperty)
@@ -142,6 +146,7 @@ class CharaStarter {
     }
 
     var callBack: MasterCharaCallBack? = null
+
     interface MasterCharaCallBack {
         fun charaLoadFinished()
     }
