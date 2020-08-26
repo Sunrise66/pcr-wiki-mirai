@@ -39,8 +39,8 @@ class PluginMain extends PluginBase {
     private Config setting;
     private String location;
     private Map<String, List<String>> charaNameMap;
-    private Long dbVersion;
     private boolean autoUpdate;
+    private boolean clanBattle;
     private boolean isReady = false;
     private List<Chara> charaList;
     private DBDownloader dbDownloader;
@@ -51,11 +51,13 @@ class PluginMain extends PluginBase {
 
     public void onLoad() {
         this.setting = loadConfig("setting.yml");
-        this.setting.setIfAbsent("location", "JP");
+        this.setting.setIfAbsent("location", "CN");
         this.setting.setIfAbsent("autoUpdate", true);
+        this.setting.setIfAbsent("clanBattle", false);
 
         this.location = this.setting.getString("location");
         this.autoUpdate = this.setting.getBoolean("autoUpdate");
+        this.clanBattle = this.setting.getBoolean("clanBattle");
 
         this.charaStarter = new CharaStarter();
         this.equipmentStarter = new EquipmentStarter();
@@ -79,17 +81,27 @@ class PluginMain extends PluginBase {
         dbDownloader = new DBDownloader(getDataFolder().getPath(), out -> {
             getLogger().info(out);
         });
-
-        dbDownloader.setCallback(()->{
+        dbDownloader.setCallback(() -> {
             equipmentStarter.loadData();
             equipmentStarter.setCallBack(() -> charaStarter.loadData(equipmentStarter.getEquipmentMap()));
             charaStarter.setCallBack(() -> {
                 charaList = charaStarter.getCharaList();
                 getLogger().info("角色数据加载完毕");
                 isReady = true;
+                if (clanBattle) {
+                    getScheduler().delay(() -> {
+                        clanBattleStarter.loadData();
+                    }, 5000);
+                }else {
+                    questStarter.loadData();
+                }
             });
-//            clanBattleStarter.loadData();
-//            questStarter.loadData();
+            if (clanBattle) {
+                clanBattleStarter.setCallBack(() -> {
+                    getLogger().info("会战数据加载完成");
+                    questStarter.loadData();
+                });
+            }
         });
         Statics.setDbFilePath(getDataFolder().getPath() + "\\" + Statics.DB_FILE_NAME);
 
@@ -156,7 +168,7 @@ class PluginMain extends PluginBase {
                     if (charaId == 100001) {
                         event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
                     } else {
-                        getCharaSkills(charaId, lv, rank, event);
+                        getCharaSkills(charaId, event);
                     }
                 }
             }
@@ -200,7 +212,7 @@ class PluginMain extends PluginBase {
         sb.append("体重：").append(chara.getWeight()).append(" kg").append("\n");
         sb.append("血型：").append(chara.getBloodType()).append("型").append("\n");
         sb.append("喜好：").append(chara.getFavorite()).append("\n");
-        sb.append("简介：").append(chara.getComment().replace("\\n","\n")).append("\n\n");
+        sb.append("简介：").append(chara.getComment().replace("\\n", "\n")).append("\n\n");
         sb.append("发送 \"角色技能（空格）角色名\"来查询技能").append("\n");
         sb.append("发送 \"角色出招（空格）角色名\"来查询角色技能循环");
 
@@ -214,20 +226,23 @@ class PluginMain extends PluginBase {
      * @param charaId 角色id
      * @param event
      */
-    public void getCharaSkills(int charaId, int lv, int rank, GroupMessageEvent event) {
+    public void getCharaSkills(int charaId, GroupMessageEvent event) {
         if (!checkEnable(event)) {
             return;
+        }else {
+            event.getGroup().sendMessage("正在查询...");
         }
         Image charaIcon = getCharaIcon(charaId, event);
         Image ubIcon;
         Image s1Icon;
         Image s2Icon;
         Image exIcon;
+        Image expIcon;
         At at = new At(event.getSender());
         //获取角色对象，以获得更多信息
         Chara chara = null;
-        for (Chara it : charaList){
-            if(charaId==it.getUnitId()){
+        for (Chara it : charaList) {
+            if (charaId == it.getUnitId()) {
                 chara = it;
                 break;
             }
@@ -236,31 +251,58 @@ class PluginMain extends PluginBase {
         List<Message> messages = new ArrayList<>();
         messages.add(at);
         messages.add(charaIcon);
+        messages.add(new PlainText("角色状态 -> \nRank："+chara.getMaxCharaRank()+" Level："+chara.getMaxCharaLevel()+"\n"));
         List<Skill> skills = chara.getSkills();
-        if (lv > chara.getMaxCharaLevel() || lv < 0) {
-            event.getGroup().sendMessage("当前角色最大Lv为：" + chara.getMaxCharaLevel());
-            return;
-        }
-        if (rank > chara.getMaxCharaRank() || rank < 0) {
-            System.out.println(rank);
-            event.getGroup().sendMessage("当前角色最大Rank为：" + chara.getMaxCharaRank());
-            return;
-        }
         for (Skill skill : skills) {
-//            if (lv > 0 && rank > 0) {
-//                chara.setMaxCharaRank(rank);
-//                chara.setMaxCharaLevel(lv);
-//            }
             if (skill.getSkillClass().getValue().equals(StringsCN.union_burst)) {
                 ubIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
                 messages.add(new PlainText(skill.getSkillClass().getValue() + "\n"));
                 messages.add(ubIcon);
                 messages.add(new PlainText(skill.getSkillName() + "\n"));
                 messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
-                messages.add(new PlainText(skill.getCastTimeText()+"\n"));
-//                if (lv > 0 && rank > 0) {
-                    messages.add(new PlainText(skill.getActionDescriptions().toString()));
-//                }
+                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
+                messages.add(new PlainText("技能效果：" + "\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString()+"\n"));
+            }
+            if(skill.getSkillClass().getValue().equals("M1")){
+                s1Icon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
+                messages.add(new PlainText(StringsCN.main_skill_1 + "\n"));
+                messages.add(s1Icon);
+                messages.add(new PlainText(skill.getSkillName() + "\n"));
+                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
+                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
+                messages.add(new PlainText("技能效果：" + "\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString()+"\n"));
+            }
+            if(skill.getSkillClass().getValue().equals("M2")){
+                s2Icon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
+                messages.add(new PlainText(StringsCN.main_skill_2 + "\n"));
+                messages.add(s2Icon);
+                messages.add(new PlainText(skill.getSkillName() + "\n"));
+                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
+                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
+                messages.add(new PlainText("技能效果：" + "\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString()+"\n"));
+            }
+            if(skill.getSkillClass().getValue().equals("E1")){
+                exIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
+                messages.add(new PlainText(StringsCN.ex_skill_1 + "\n"));
+                messages.add(exIcon);
+                messages.add(new PlainText(skill.getSkillName() + "\n"));
+                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
+                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
+                messages.add(new PlainText("技能效果：" + "\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString()+"\n"));
+            }
+            if(skill.getSkillClass().getValue().equals("E1+")){
+                expIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
+                messages.add(new PlainText(StringsCN.ex_skill_1_evo + "\n"));
+                messages.add(expIcon);
+                messages.add(new PlainText(skill.getSkillName() + "\n"));
+                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
+                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
+                messages.add(new PlainText("技能效果：" + "\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString()+"\n"));
             }
         }
         event.getGroup().sendMessage(MessageUtils.newChain(messages));

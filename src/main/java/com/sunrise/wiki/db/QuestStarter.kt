@@ -14,9 +14,9 @@ class QuestStarter {
      */
     fun loadData() {
         if (questList.isNullOrEmpty()) {
-            thread(start = true) {
+//            thread(start = true) {
                 questList.addAll(MasterQuest().quest)
-            }
+//            }
         }
     }
 }

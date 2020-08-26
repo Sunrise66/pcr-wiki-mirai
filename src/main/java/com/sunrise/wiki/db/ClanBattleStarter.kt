@@ -17,21 +17,22 @@ class ClanBattleStarter {
      * 从数据库读取所有会战数据。
      * 此方法应该且仅应该在程序初始化时或数据库更新完成后使用。
      */
-    fun loadData(){
+    fun loadData() {
         if (periodList.isNullOrEmpty()) {
-            thread(start = true){
+//            thread(start = true) {
                 val innerPeriodList = mutableListOf<ClanBattlePeriod>()
                 DBHelper.get().getClanBattlePeriod()?.forEach {
                     innerPeriodList.add(it.transToClanBattlePeriod())
                 }
                 periodList.addAll(innerPeriodList)
-            }
+                callBack?.onLoadFinish()
+//            }
         }
     }
 
-    fun loadDungeon(){
-        if (dungeonList.isNullOrEmpty()){
-            thread(start = true){
+    fun loadDungeon() {
+        if (dungeonList.isNullOrEmpty()) {
+            thread(start = true) {
                 DBHelper.get().getDungeons()?.forEach {
                     dungeonList.add(it.dungeon)
                 }
@@ -39,7 +40,7 @@ class ClanBattleStarter {
         }
     }
 
-    fun mSetSelectedBoss(enemy: Enemy){
+    fun mSetSelectedBoss(enemy: Enemy) {
         if (enemy.isMultiTarget) {
             enemy.skills.forEach {
                 //多目标Boss技能值暂时仅供参考，非准确值
@@ -53,7 +54,7 @@ class ClanBattleStarter {
         this.selectedEnemyList = listOf(enemy)
     }
 
-    fun mSetSelectedBoss(enemyList: List<Enemy>){
+    fun mSetSelectedBoss(enemyList: List<Enemy>) {
         enemyList.forEach { enemy ->
             if (enemy.isMultiTarget) {
                 enemy.skills.forEach {
@@ -67,5 +68,11 @@ class ClanBattleStarter {
             }
         }
         this.selectedEnemyList = enemyList
+    }
+
+    var callBack: ClanBattleStaterInf? = null
+
+    interface ClanBattleStaterInf {
+        fun onLoadFinish()
     }
 }

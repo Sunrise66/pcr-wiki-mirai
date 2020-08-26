@@ -83,7 +83,7 @@ class DBHelper private constructor(var dbFilePath: String) {
                     try {
                         columnIdx = cursor.findColumn(columnName)
                     }catch (e:SQLException){
-                        println(e.toString())
+//                        println(e.toString())
                     }
                     if (columnIdx != -1) {
                         if (!f.isAccessible) {

@@ -31,7 +31,7 @@ class CharaStarter {
      */
     fun loadData(equipmentMap: Map<Int, Equipment>) {
         if (charaList.isNullOrEmpty()) {
-            thread(start = true) {
+//            thread(start = true) {
                 val innerCharaList = mutableListOf<Chara>()
                 loadBasic(innerCharaList)
                 innerCharaList.forEach {
@@ -47,7 +47,7 @@ class CharaStarter {
                 }
                 charaList.addAll(innerCharaList)
                 callBack?.charaLoadFinished()
-            }
+//            }
         }
     }
 
