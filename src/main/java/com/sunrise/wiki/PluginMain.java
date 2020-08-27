@@ -298,7 +298,9 @@ class PluginMain extends PluginBase {
         Image charaIcon = getCharaIcon(charaId, event);
         Image ubIcon;
         Image s1Icon;
+        Image s1pIcon;
         Image s2Icon;
+        Image s2pIcon;
         Image exIcon;
         Image expIcon;
         At at = new At(event.getSender());
@@ -315,6 +317,10 @@ class PluginMain extends PluginBase {
         messages.add(at);
         messages.add(charaIcon);
         messages.add(new PlainText("角色状态 -> \nRank：" + chara.getMaxCharaRank() + " Level：" + chara.getMaxCharaLevel() + "\n"));
+        List<AttackPattern> attackPatternList = chara.getAttackPatternList();
+        for(AttackPattern pattern : attackPatternList){
+
+        }
         List<Skill> skills = chara.getSkills();
         for (Skill skill : skills) {
             if (skill.getSkillClass().getValue().equals(StringsCN.union_burst)) {
@@ -339,10 +345,32 @@ class PluginMain extends PluginBase {
                 messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
                 messages.add(new PlainText("======================\n"));
             }
+            if (skill.getSkillClass().getValue().equals("M1+")) {
+                s1pIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
+                messages.add(new PlainText(StringsCN.main_skill_1_evo + "\n"));
+                messages.add(s1pIcon);
+                messages.add(new PlainText(skill.getSkillName() + "\n"));
+                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
+                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
+                messages.add(new PlainText("技能效果：" + "\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
+                messages.add(new PlainText("======================\n"));
+            }
             if (skill.getSkillClass().getValue().equals("M2")) {
                 s2Icon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
                 messages.add(new PlainText(StringsCN.main_skill_2 + "\n"));
                 messages.add(s2Icon);
+                messages.add(new PlainText(skill.getSkillName() + "\n"));
+                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
+                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
+                messages.add(new PlainText("技能效果：" + "\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
+                messages.add(new PlainText("======================\n"));
+            }
+            if (skill.getSkillClass().getValue().equals("M2+")) {
+                s2pIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
+                messages.add(new PlainText(StringsCN.main_skill_2_evo + "\n"));
+                messages.add(s2pIcon);
                 messages.add(new PlainText(skill.getSkillName() + "\n"));
                 messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
                 messages.add(new PlainText(skill.getCastTimeText() + "\n"));
