@@ -3,7 +3,7 @@ package com.sunrise.wiki.common;
 import java.util.regex.Pattern;
 
 public class Commands {
-    public static String searchCharaCmd = "^查询角色\\s.{0,10}$";
-    public static String searchCharaSkillCmd = "(角色技能)(\\s\\S{0,10})(\\s\\S+ {0,10})(\\s\\S+ {0,10})";
-    public static Pattern searchCharaSkillPattern = Pattern.compile("角色技能\\s+(?<name1>\\S{0,10}\\s+)(?<rank>\\S+ {0,10})(?<lv>\\s\\S+ {0,10})|角色技能\\s+(?<name2>\\S{0,10}.)|角色技能");
+    public static Pattern searchCharaPrf = Pattern.compile("角色简介(?<name>.{0,10})");
+    public static Pattern searchCharaDetail = Pattern.compile("角色详情(?<name>.{0,10})");
+    public static Pattern searchCharaSkill = Pattern.compile("角色技能(?<name1>.{0,5})(?<rank>\\sr\\S+ {0,4})(?<lv>\\sl\\S+ {0,4})|角色技能(?<name2>.{0,5})");
 }

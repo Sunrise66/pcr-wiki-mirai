@@ -4,17 +4,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.sunrise.wiki.common.Statics;
-import com.sunrise.wiki.https.MyCallBack;
-import com.sunrise.wiki.https.MyOKHttp;
 import com.sunrise.wiki.utils.BrotliUtils;
-import okhttp3.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 public class DBDownloader {
     private String basePath;
@@ -140,35 +135,6 @@ public class DBDownloader {
         } catch (IOException e) {
             out.out(e.toString());
         }
-//        OkHttpClient client = new OkHttpClient.Builder().build();
-//        Request request = new Request.Builder().url(Statics.LATEST_VERSION_URL).build();
-//        Call call = client.newCall(request);
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                out.out(e.toString());
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//                String lastVersionJson = Objects.requireNonNull(response.body()).string();
-//                JsonObject object = JsonParser.parseString(lastVersionJson).getAsJsonObject();
-//                Long serverVersion = object.get("TruthVersion").getAsLong();
-//                if (!dbVersion.equals(serverVersion)) {
-//                    out.out("数据库不是最新版本，开始下载！");
-//                    if (downloadDB()) {
-//                        File versionInfo = new File(DB_VERSION_INFO_PATH);
-//                        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(versionInfo), StandardCharsets.UTF_8));
-//                        bw.write(lastVersionJson);
-//                        bw.flush();
-//                        bw.close();
-//                    }
-//                } else {
-//                    isReady = true;
-//                    out.out("数据库文件为最新，准备完毕！");
-//                }
-//            }
-//        });
     }
 
     private LogOut out;

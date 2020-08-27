@@ -1,38 +1,29 @@
 package com.sunrise.wiki;
 
 import com.alibaba.fastjson.JSON;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import com.sunrise.wiki.common.Commands;
+import com.sunrise.wiki.common.I18N;
 import com.sunrise.wiki.common.Statics;
+import com.sunrise.wiki.data.AttackPattern;
 import com.sunrise.wiki.data.Chara;
 import com.sunrise.wiki.data.Property;
 import com.sunrise.wiki.data.Skill;
-import com.sunrise.wiki.data.action.ActionParameter;
-import com.sunrise.wiki.data.action.ActionRaw;
 import com.sunrise.wiki.db.*;
-import com.sunrise.wiki.db.beans.*;
-import com.sunrise.wiki.https.MyCallBack;
-import com.sunrise.wiki.https.MyOKHttp;
 import com.sunrise.wiki.res.values.StringsCN;
-import com.sunrise.wiki.utils.BrotliUtils;
+import com.sunrise.wiki.utils.Utils;
 import net.mamoe.mirai.console.plugins.Config;
 import net.mamoe.mirai.console.plugins.PluginBase;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.*;
-import okhttp3.Call;
-import okhttp3.Response;
+import net.mamoe.mirai.message.data.Image;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.sunrise.wiki.utils.ImageUtils.getIconWithPng;
 
 class PluginMain extends PluginBase {
 
@@ -92,7 +83,7 @@ class PluginMain extends PluginBase {
                     getScheduler().delay(() -> {
                         clanBattleStarter.loadData();
                     }, 5000);
-                }else {
+                } else {
                     questStarter.loadData();
                 }
             });
@@ -130,14 +121,25 @@ class PluginMain extends PluginBase {
 
     public void onEnable() {
         this.getEventListener().subscribeAlways(GroupMessageEvent.class, (GroupMessageEvent event) -> {
-            String commandStr = event.getMessage().contentToString();
-            if (commandStr.matches(Commands.searchCharaCmd)) {
-                //根据正则获取角色名
-                Pattern pattern = Pattern.compile("\\s.{0,10}");
-                Matcher matcher = pattern.matcher(commandStr);
-                String charaName = "";
-                if (matcher.find()) {
-                    charaName = matcher.group().toLowerCase().trim();
+//            [mirai:source:2523,-1507788872][mirai:at:2928703159,@testbot] 查询角色 水吃
+            String nick = event.getBot().getNick();
+            String commandStr = "";
+            if (event.getMessage().get(1).contentToString().contains("@" + nick)) {
+                try {
+                    commandStr = event.getMessage().get(2).contentToString().trim();
+                } catch (IndexOutOfBoundsException e) {
+                    commandStr = "";
+                }
+            }
+            getLogger().info("commandStr:"+commandStr);
+            Matcher searchCharaPrfMatcher = Commands.searchCharaPrf.matcher(commandStr);
+            Matcher searchCharaDetailMatcher = Commands.searchCharaDetail.matcher(commandStr);
+            Matcher searchCharaSkillMatcher = Commands.searchCharaSkill.matcher(commandStr);
+            if(searchCharaPrfMatcher.find()){
+                String charaName = searchCharaPrfMatcher.group("name").trim();
+                if("".equals(charaName)){
+                    event.getGroup().sendMessage("请输入角色名");
+                    return;
                 }
                 int charaId = getIdByName(charaName);
                 if (charaId == 100001) {
@@ -145,31 +147,45 @@ class PluginMain extends PluginBase {
                 } else {
                     getCharaInfo(charaId, event);
                 }
-            } else if (Commands.searchCharaSkillPattern.matcher(commandStr).find()) {
-                Matcher matcher = Commands.searchCharaSkillPattern.matcher(commandStr);
+            }
+            if(searchCharaDetailMatcher.find()){
+                String charaName = searchCharaDetailMatcher.group("name").trim();
+                if("".equals(charaName)){
+                    event.getGroup().sendMessage("请输入角色名");
+                    return;
+                }
+                int charaId = getIdByName(charaName);
+                if (charaId == 100001) {
+                    event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
+                } else {
+                    getCharaDetails(charaId, event);
+                }
+            }
+            if(searchCharaSkillMatcher.find()){
                 String charaName = "";
                 int lv = 0;
                 int rank = 0;
-                if (matcher.find()) {
-                    System.out.println(matcher.group());
-                    if (null == matcher.group("name1") && null == matcher.group("name2")) {
-                        event.getGroup().sendMessage("请输入正确的指令");
+                if (null == searchCharaSkillMatcher.group("name1") && null == searchCharaSkillMatcher.group("name2")) {
+                    event.getGroup().sendMessage("请输入正确的指令");
+                    return;
+                }
+                if (null == searchCharaSkillMatcher.group("name1") && null != searchCharaSkillMatcher.group("name2")) {
+                    charaName = searchCharaSkillMatcher.group("name2").trim();
+                    if("".equals(charaName)){
+                        event.getGroup().sendMessage("请输入角色名");
                         return;
                     }
-                    if (null == matcher.group("name1") && null != matcher.group("name2")) {
-                        charaName = matcher.group("name2").trim();
-                    }
-                    if (null != matcher.group("name1")) {
-                        charaName = matcher.group("name1").trim();
-                        lv = Integer.parseInt(matcher.group("lv").trim());
-                        rank = Integer.parseInt(matcher.group("rank").substring(4).trim());
-                    }
-                    int charaId = getIdByName(charaName);
-                    if (charaId == 100001) {
-                        event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
-                    } else {
-                        getCharaSkills(charaId, event);
-                    }
+                }
+                if (null != searchCharaSkillMatcher.group("name1")) {
+                    charaName = searchCharaSkillMatcher.group("name1").trim();
+                    lv = Integer.parseInt(searchCharaSkillMatcher.group("lv").replace("l","").trim());
+                    rank = Integer.parseInt(searchCharaSkillMatcher.group("rank").replace("r","").trim());
+                }
+                int charaId = getIdByName(charaName);
+                if (charaId == 100001) {
+                    event.getGroup().sendMessage("不知道您要查找的角色是谁呢？可能是未实装角色哦~");
+                } else {
+                    getCharaSkills(charaId, event);
                 }
             }
         });
@@ -177,6 +193,50 @@ class PluginMain extends PluginBase {
     }
 
     /*************************指令方法区*************************************/
+
+    public void getCharaDetails(int charaId, GroupMessageEvent event) {
+        if (!checkEnable(event)) {
+            return;
+        } else {
+            event.getGroup().sendMessage("正在查询...");
+        }
+        Chara chara = null;
+        for (Chara it :
+                charaList) {
+            if (charaId == it.getUnitId()) {
+                chara = it;
+                break;
+            }
+        }
+        charaStarter.mSetSelectedChara(chara);
+        At at = new At(event.getSender());
+        if (null == chara) {
+            event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
+            return;
+        }
+        Image charaIcon = getCharaIcon(charaId, event);
+        Property charaProperty = chara.getCharaProperty();
+        List<Message> messages = new ArrayList<>();
+        messages.add(at);
+        messages.add(charaIcon);
+        messages.add(new PlainText(chara.getUnitName() + "\n"));
+        messages.add(new PlainText("角色状态:-->\n"));
+        messages.add(new PlainText("rank：" + chara.getMaxCharaRank() + "  " + "Level：" + chara.getMaxCharaLevel() + "\n"));
+        messages.add(new PlainText("======================\n"));
+        messages.add(new PlainText(String.format(StringsCN.text_normal_attack_cast_time, chara.getNormalAtkCastTime()) + "\n"));
+        messages.add(new PlainText(StringsCN.text_physical_atk + " " + charaProperty.getAtk() + "\n" + StringsCN.text_magical_atk + " " + charaProperty.getMagicStr() + "\n"));
+        messages.add(new PlainText(StringsCN.text_physical_crt + " " + charaProperty.getPhysicalCritical() + "\n" + StringsCN.text_magical_crt + " " + charaProperty.getMagicCritical() + "\n"));
+        messages.add(new PlainText(StringsCN.text_physical_def + " " + charaProperty.getDef() + "\n" + StringsCN.text_magical_def + " " + charaProperty.getMagicDef() + "\n"));
+        messages.add(new PlainText(StringsCN.text_hp + " " + charaProperty.getHp() + "\n" + StringsCN.text_life_steal + " " + charaProperty.getLifeSteal() + "\n"));
+        messages.add(new PlainText(StringsCN.text_energy_recovery + " " + charaProperty.getEnergyRecoveryRate() + "\n" + StringsCN.text_energy_reduce + " " + charaProperty.getEnergyReduceRate() + "\n"));
+        messages.add(new PlainText(StringsCN.text_accuracy + " " + charaProperty.getAccuracy() + "\n" + StringsCN.text_dodge + " " + charaProperty.getDodge() + "\n"));
+        messages.add(new PlainText(StringsCN.text_wave_hp_recovery + " " + charaProperty.getWaveHpRecovery() + "\n" + StringsCN.text_wave_energy_recovery + " " + charaProperty.getWaveEnergyRecovery() + "\n"));
+        messages.add(new PlainText(StringsCN.text_physical_penetrate + " " + charaProperty.getPhysicalPenetrate() + "\n" + StringsCN.text_magical_penetrate + " " + charaProperty.getMagicPenetrate() + "\n"));
+        messages.add(new PlainText(StringsCN.text_hp_recovery + " " + charaProperty.getHpRecovery() + "\n"));
+        messages.add(new PlainText("======================\n"));
+
+        event.getGroup().sendMessage(MessageUtils.newChain(messages));
+    }
 
     /**
      * 获取角色信息
@@ -187,6 +247,8 @@ class PluginMain extends PluginBase {
     public void getCharaInfo(int charaId, GroupMessageEvent event) {
         if (!checkEnable(event)) {
             return;
+        } else {
+            event.getGroup().sendMessage("正在查询...");
         }
         Chara chara = null;
         for (Chara it :
@@ -196,6 +258,7 @@ class PluginMain extends PluginBase {
                 break;
             }
         }
+        charaStarter.mSetSelectedChara(chara);
         At at = new At(event.getSender());
         StringBuffer sb = new StringBuffer();
         if (null == chara) {
@@ -229,7 +292,7 @@ class PluginMain extends PluginBase {
     public void getCharaSkills(int charaId, GroupMessageEvent event) {
         if (!checkEnable(event)) {
             return;
-        }else {
+        } else {
             event.getGroup().sendMessage("正在查询...");
         }
         Image charaIcon = getCharaIcon(charaId, event);
@@ -251,7 +314,7 @@ class PluginMain extends PluginBase {
         List<Message> messages = new ArrayList<>();
         messages.add(at);
         messages.add(charaIcon);
-        messages.add(new PlainText("角色状态 -> \nRank："+chara.getMaxCharaRank()+" Level："+chara.getMaxCharaLevel()+"\n"));
+        messages.add(new PlainText("角色状态 -> \nRank：" + chara.getMaxCharaRank() + " Level：" + chara.getMaxCharaLevel() + "\n"));
         List<Skill> skills = chara.getSkills();
         for (Skill skill : skills) {
             if (skill.getSkillClass().getValue().equals(StringsCN.union_burst)) {
@@ -262,9 +325,10 @@ class PluginMain extends PluginBase {
                 messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
                 messages.add(new PlainText(skill.getCastTimeText() + "\n"));
                 messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString()+"\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
+                messages.add(new PlainText("======================\n"));
             }
-            if(skill.getSkillClass().getValue().equals("M1")){
+            if (skill.getSkillClass().getValue().equals("M1")) {
                 s1Icon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
                 messages.add(new PlainText(StringsCN.main_skill_1 + "\n"));
                 messages.add(s1Icon);
@@ -272,9 +336,10 @@ class PluginMain extends PluginBase {
                 messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
                 messages.add(new PlainText(skill.getCastTimeText() + "\n"));
                 messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString()+"\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
+                messages.add(new PlainText("======================\n"));
             }
-            if(skill.getSkillClass().getValue().equals("M2")){
+            if (skill.getSkillClass().getValue().equals("M2")) {
                 s2Icon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
                 messages.add(new PlainText(StringsCN.main_skill_2 + "\n"));
                 messages.add(s2Icon);
@@ -282,9 +347,10 @@ class PluginMain extends PluginBase {
                 messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
                 messages.add(new PlainText(skill.getCastTimeText() + "\n"));
                 messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString()+"\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
+                messages.add(new PlainText("======================\n"));
             }
-            if(skill.getSkillClass().getValue().equals("E1")){
+            if (skill.getSkillClass().getValue().equals("E1")) {
                 exIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
                 messages.add(new PlainText(StringsCN.ex_skill_1 + "\n"));
                 messages.add(exIcon);
@@ -292,9 +358,10 @@ class PluginMain extends PluginBase {
                 messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
                 messages.add(new PlainText(skill.getCastTimeText() + "\n"));
                 messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString()+"\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
+                messages.add(new PlainText("======================\n"));
             }
-            if(skill.getSkillClass().getValue().equals("E1+")){
+            if (skill.getSkillClass().getValue().equals("E1+")) {
                 expIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
                 messages.add(new PlainText(StringsCN.ex_skill_1_evo + "\n"));
                 messages.add(expIcon);
@@ -302,7 +369,8 @@ class PluginMain extends PluginBase {
                 messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
                 messages.add(new PlainText(skill.getCastTimeText() + "\n"));
                 messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString()+"\n"));
+                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
+                messages.add(new PlainText("======================\n"));
             }
         }
         event.getGroup().sendMessage(MessageUtils.newChain(messages));
@@ -334,7 +402,7 @@ class PluginMain extends PluginBase {
     private Image getSkillIcon(int unitId, int skillId, String iconUrl, GroupMessageEvent event) {
         File skillIconPath = new File(getDataFolder() + "\\images\\skillIcons\\" + unitId);
         File png = new File(getDataFolder() + "\\images\\skillIcons\\" + unitId + "\\" + skillId + ".png");
-        return getIconWithPng(iconUrl, skillIconPath, png, event);
+        return getIconWithPng(iconUrl, skillIconPath, png, 0.5, event);
     }
 
     /**
@@ -348,38 +416,7 @@ class PluginMain extends PluginBase {
         File unitIconsPath = new File(getDataFolder() + "\\" + "images" + "\\" + "unitIcons");
         File png = new File(getDataFolder() + "\\" + "images" + "\\" + "unitIcons" + "\\" + prefab_id + 30 + ".png");
         String iconUrl = String.format(Locale.US, Statics.ICON_URL, prefab_id + 30);
-        return getIconWithPng(iconUrl, unitIconsPath, png, event);
-    }
-
-    /**
-     * 获取png格式的icon
-     *
-     * @param iconUrl  图片链接
-     * @param savePath 图片存储目录
-     * @param target   图片完整存储路径，包括文件名
-     * @param event
-     * @return
-     */
-    private Image getIconWithPng(String iconUrl, File savePath, File target, GroupMessageEvent event) {
-        if (!savePath.exists()) {
-            savePath.mkdirs();
-        }
-        Image image;
-        try {
-            if (!target.exists()) {
-                HttpURLConnection conn = (HttpURLConnection) new URL(iconUrl).openConnection();
-                conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-                InputStream inputStream = conn.getInputStream();
-                BufferedImage bufferedImage = ImageIO.read(inputStream);
-                ImageIO.write(bufferedImage, "png", target);
-                inputStream.close();
-            }
-            image = event.getGroup().uploadImage(target);
-            return image;
-        } catch (Exception e) {
-            getLogger().debug(e);
-            return null;
-        }
+        return getIconWithPng(iconUrl, unitIconsPath, png, 1, event);
     }
 
     /**
