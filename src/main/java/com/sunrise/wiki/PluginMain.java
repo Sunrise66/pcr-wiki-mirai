@@ -2,7 +2,6 @@ package com.sunrise.wiki;
 
 import com.alibaba.fastjson.JSON;
 import com.sunrise.wiki.common.Commands;
-import com.sunrise.wiki.common.I18N;
 import com.sunrise.wiki.common.Statics;
 import com.sunrise.wiki.data.AttackPattern;
 import com.sunrise.wiki.data.Chara;
@@ -10,20 +9,21 @@ import com.sunrise.wiki.data.Property;
 import com.sunrise.wiki.data.Skill;
 import com.sunrise.wiki.db.*;
 import com.sunrise.wiki.res.values.StringsCN;
-import com.sunrise.wiki.utils.Utils;
+import com.sunrise.wiki.utils.ImageUtils;
 import net.mamoe.mirai.console.plugins.Config;
 import net.mamoe.mirai.console.plugins.PluginBase;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.message.data.Image;
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.sunrise.wiki.utils.ImageUtils.getIconWithPng;
+import static com.sunrise.wiki.utils.ImageUtils.mergeSkillImages;
 
 class PluginMain extends PluginBase {
 
@@ -131,13 +131,13 @@ class PluginMain extends PluginBase {
                     commandStr = "";
                 }
             }
-            getLogger().info("commandStr:"+commandStr);
+            getLogger().info("commandStr:" + commandStr);
             Matcher searchCharaPrfMatcher = Commands.searchCharaPrf.matcher(commandStr);
             Matcher searchCharaDetailMatcher = Commands.searchCharaDetail.matcher(commandStr);
             Matcher searchCharaSkillMatcher = Commands.searchCharaSkill.matcher(commandStr);
-            if(searchCharaPrfMatcher.find()){
+            if (searchCharaPrfMatcher.find()) {
                 String charaName = searchCharaPrfMatcher.group("name").trim();
-                if("".equals(charaName)){
+                if ("".equals(charaName)) {
                     event.getGroup().sendMessage("请输入角色名");
                     return;
                 }
@@ -148,9 +148,9 @@ class PluginMain extends PluginBase {
                     getCharaInfo(charaId, event);
                 }
             }
-            if(searchCharaDetailMatcher.find()){
+            if (searchCharaDetailMatcher.find()) {
                 String charaName = searchCharaDetailMatcher.group("name").trim();
-                if("".equals(charaName)){
+                if ("".equals(charaName)) {
                     event.getGroup().sendMessage("请输入角色名");
                     return;
                 }
@@ -161,7 +161,7 @@ class PluginMain extends PluginBase {
                     getCharaDetails(charaId, event);
                 }
             }
-            if(searchCharaSkillMatcher.find()){
+            if (searchCharaSkillMatcher.find()) {
                 String charaName = "";
                 int lv = 0;
                 int rank = 0;
@@ -171,15 +171,15 @@ class PluginMain extends PluginBase {
                 }
                 if (null == searchCharaSkillMatcher.group("name1") && null != searchCharaSkillMatcher.group("name2")) {
                     charaName = searchCharaSkillMatcher.group("name2").trim();
-                    if("".equals(charaName)){
+                    if ("".equals(charaName)) {
                         event.getGroup().sendMessage("请输入角色名");
                         return;
                     }
                 }
                 if (null != searchCharaSkillMatcher.group("name1")) {
                     charaName = searchCharaSkillMatcher.group("name1").trim();
-                    lv = Integer.parseInt(searchCharaSkillMatcher.group("lv").replace("l","").trim());
-                    rank = Integer.parseInt(searchCharaSkillMatcher.group("rank").replace("r","").trim());
+                    lv = Integer.parseInt(searchCharaSkillMatcher.group("lv").replace("l", "").trim());
+                    rank = Integer.parseInt(searchCharaSkillMatcher.group("rank").replace("r", "").trim());
                 }
                 int charaId = getIdByName(charaName);
                 if (charaId == 100001) {
@@ -318,8 +318,19 @@ class PluginMain extends PluginBase {
         messages.add(charaIcon);
         messages.add(new PlainText("角色状态 -> \nRank：" + chara.getMaxCharaRank() + " Level：" + chara.getMaxCharaLevel() + "\n"));
         List<AttackPattern> attackPatternList = chara.getAttackPatternList();
-        for(AttackPattern pattern : attackPatternList){
-
+        List<BufferedImage> loopImages = new ArrayList<>();
+        int index = 0;
+        for (AttackPattern pattern : attackPatternList) {
+            for (AttackPattern.AttackPatternItem item : pattern.items) {
+                BufferedImage icon = getLoopIcon(index, charaId, item.iconUrl);
+                loopImages.add(icon);
+                index++;
+            }
+        }
+        index = 0;
+        BufferedImage skillImages = mergeSkillImages(loopImages);
+        if (null!=skillImages) {
+            messages.add(event.getGroup().uploadImage(skillImages));
         }
         List<Skill> skills = chara.getSkills();
         for (Skill skill : skills) {
@@ -447,6 +458,12 @@ class PluginMain extends PluginBase {
         return getIconWithPng(iconUrl, unitIconsPath, png, 1, event);
     }
 
+    private BufferedImage getLoopIcon(int index, int charaId, String iconUrl) {
+        File loopIconPath = new File(getDataFolder() + "\\images\\loopIcons\\"+charaId);
+        File png = new File(getDataFolder() + "\\images\\loopIcons\\" + charaId + "\\" + index + ".png");
+        return getIconWithPng(iconUrl, loopIconPath, png, 0.5);
+    }
+
     /**
      * 根据名称查询角色id
      *
@@ -455,7 +472,6 @@ class PluginMain extends PluginBase {
      */
     public int getIdByName(String name) {
         Set<String> keySet = charaNameMap.keySet();
-//        System.out.println(charaNameMap.toString());
         //此处采用嵌套遍历来搜寻id，如果有更优的算法请大佬指出
         for (String key : keySet) {
             for (String s : charaNameMap.get(key)) {
