@@ -11,15 +11,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImageUtils {
 
     public static Image getIconWithPng(String iconUrl, File savePath, File target, double times, GroupMessageEvent event) {
         BufferedImage iconWithPng = getIconWithPng(iconUrl, savePath, target, times);
-        if (null!=iconWithPng) {
+        if (null != iconWithPng) {
             return event.getGroup().uploadImage(iconWithPng);
-        }else {
+        } else {
             return null;
         }
     }
@@ -64,25 +65,53 @@ public class ImageUtils {
         return newImage;
     }
 
-    public static BufferedImage mergeSkillImages(List<BufferedImage> imageList) {
-        int totalWidth = imageList.get(0).getWidth() / 2;
-        int totalHeight = imageList.get(0).getHeight() / 2;
-        BufferedImage firstImage = imageList.get(0);
-        Graphics2D graphics2D = firstImage.createGraphics();
-        for (int i = 1; i < imageList.size(); i++) {
-            totalWidth += imageList.get(i).getWidth();
-            if (imageList.size() <= 6) {
-                totalHeight += imageList.get(i).getHeight();
-                graphics2D.drawImage(imageList.get(i), 0,0,totalWidth,totalHeight,null);
-            } else {
-                totalHeight += (imageList.size() % 6 == 0 ? imageList.size() / 6 : imageList.size() / 6 + 1) * imageList.get(i).getHeight();
-
-                    graphics2D.drawImage(imageList.get(i),0,0,totalWidth,totalHeight,null);
-
+    public static BufferedImage mergeImage(List<BufferedImage> imgs) {
+        List<BufferedImage> destimgs1 = new ArrayList<>();
+        List<BufferedImage> destimgs2 = new ArrayList<>();
+        List<BufferedImage> destimgs3 = new ArrayList<>();
+        List<BufferedImage> destimgs4 = new ArrayList<>();
+        List<BufferedImage> dests = new ArrayList<>();
+        BufferedImage dest1 = null;
+        BufferedImage dest2 = null;
+        BufferedImage dest3 = null;
+        BufferedImage dest4 = null;
+        BufferedImage finalDest = null;
+        for (int i = 0; i < imgs.size(); i++) {
+            if (i <= 5) {
+                destimgs1.add(imgs.get(i));
+            } else if (i <= 11 && i > 5) {
+                destimgs2.add(imgs.get(i));
+            } else if (i <= 17 && i > 11) {
+                destimgs3.add(imgs.get(i));
+            } else if (i <= 23 && i > 17) {
+                destimgs4.add(imgs.get(i));
             }
         }
-        return firstImage;
+        try {
+            if (!destimgs1.isEmpty()) {
+                dest1 = mergeImage(true, destimgs1);
+                dests.add(dest1);
+            }
+            if (!destimgs2.isEmpty()) {
+                dest2 = mergeImage(true, destimgs2);
+                dests.add(dest2);
+            }
+            if (!destimgs3.isEmpty()) {
+                dest3 = mergeImage(true, destimgs3);
+                dests.add(dest3);
+            }
+            if (!destimgs4.isEmpty()) {
+                dest4 = mergeImage(true, destimgs4);
+                dests.add(dest4);
+            }
+            finalDest = mergeImage(false, dests);
+        } catch (Exception e) {
+            e.printStackTrace();
+            finalDest = null;
+        }
+        return finalDest;
     }
+
 
     /**
      * 2  * 合并任数量的图片成一张图片
@@ -98,6 +127,7 @@ public class ImageUtils {
     public static BufferedImage mergeImage(boolean isHorizontal, List<BufferedImage> imgs) throws IOException {
         // 生成新图片
         BufferedImage destImage = null;
+        Graphics graphics = null;
         // 计算新图片的长和高
         int allw = 0, allh = 0, allwMax = 0, allhMax = 0;
         // 获取总长、总宽、最长、最宽
@@ -114,11 +144,23 @@ public class ImageUtils {
         }
         // 创建新图片
         if (isHorizontal) {
-            destImage = new BufferedImage(allw, allhMax, BufferedImage.TYPE_INT_RGB);
+            destImage = new BufferedImage(allw, allhMax + allhMax / 2, BufferedImage.TYPE_INT_RGB);
+            graphics = destImage.getGraphics();
+            graphics.fillRect(0, 0, allw, allhMax + allhMax / 2);
+            graphics.setColor(Color.WHITE);
+            graphics.drawLine(0, 0, allw, allhMax + allhMax / 2);
+            graphics.dispose();
         } else {
+            destImage = new BufferedImage(allwMax, allh, BufferedImage.TYPE_INT_RGB);
+            graphics = destImage.getGraphics();
+            graphics.fillRect(0, 0, allwMax, allh);
+            graphics.setColor(Color.WHITE);
+            graphics.drawLine(0, 0, allwMax, allh);
+            graphics.dispose();
         }
         // 合并所有子图片到新图片
         int wx = 0, wy = 0;
+        Font font = new Font("Arial", Font.PLAIN, 48);
         for (int i = 0; i < imgs.size(); i++) {
             BufferedImage img = imgs.get(i);
             int w1 = img.getWidth();
@@ -127,7 +169,8 @@ public class ImageUtils {
             int[] ImageArrayOne = new int[w1 * h1];
             ImageArrayOne = img.getRGB(0, 0, w1, h1, ImageArrayOne, 0, w1); // 逐行扫描图像中各个像素的RGB到数组中
             if (isHorizontal) { // 水平方向合并
-                destImage.setRGB(wx, 0, w1, h1, ImageArrayOne, 0, w1); // 设置上半部分或左半部分的RGB
+                destImage.setRGB(wx, h1 / 4, w1, h1, ImageArrayOne, 0, w1); // 设置上半部分或左半部分的RGB
+                graphics.setFont(font);
             } else { // 垂直方向合并
                 destImage.setRGB(0, wy, w1, h1, ImageArrayOne, 0, w1); // 设置上半部分或左半部分的RGB
             }

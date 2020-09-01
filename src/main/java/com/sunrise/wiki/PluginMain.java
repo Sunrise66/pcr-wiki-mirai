@@ -22,8 +22,7 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static com.sunrise.wiki.utils.ImageUtils.getIconWithPng;
-import static com.sunrise.wiki.utils.ImageUtils.mergeSkillImages;
+import static com.sunrise.wiki.utils.ImageUtils.*;
 
 class PluginMain extends PluginBase {
 
@@ -317,6 +316,7 @@ class PluginMain extends PluginBase {
         messages.add(at);
         messages.add(charaIcon);
         messages.add(new PlainText("角色状态 -> \nRank：" + chara.getMaxCharaRank() + " Level：" + chara.getMaxCharaLevel() + "\n"));
+        messages.add(new PlainText("技能循环：\n"));
         List<AttackPattern> attackPatternList = chara.getAttackPatternList();
         List<BufferedImage> loopImages = new ArrayList<>();
         int index = 0;
@@ -328,7 +328,7 @@ class PluginMain extends PluginBase {
             }
         }
         index = 0;
-        BufferedImage skillImages = mergeSkillImages(loopImages);
+        BufferedImage skillImages = mergeImage(loopImages);
         if (null!=skillImages) {
             messages.add(event.getGroup().uploadImage(skillImages));
         }
