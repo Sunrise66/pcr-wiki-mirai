@@ -73,7 +73,7 @@ class DBHelper private constructor(var dbFilePath: String) {
                 if (cursor.isBeforeFirst) {
                     continue
                 }
-                val bean = theClass.newInstance()
+                val bean = theClass.getDeclaredConstructor().newInstance();
                 for (f in arrField) {
                     val columnName = f.name
                     if (columnName == "ailmentMap") {
@@ -86,7 +86,7 @@ class DBHelper private constructor(var dbFilePath: String) {
 //                        println(e.toString())
                     }
                     if (columnIdx != -1) {
-                        if (!f.isAccessible) {
+                        if (!f.canAccess(bean)) {
                             f.isAccessible = true
                         }
                         val type = f.type

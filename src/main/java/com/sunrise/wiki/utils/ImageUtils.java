@@ -65,12 +65,20 @@ public class ImageUtils {
         return newImage;
     }
 
-    public static BufferedImage mergeImage(List<BufferedImage> imgs) {
+    public static BufferedImage mergeSkillImages(List<BufferedImage> imgs, List<String> loops, List<String> skills) {
         List<BufferedImage> destimgs1 = new ArrayList<>();
         List<BufferedImage> destimgs2 = new ArrayList<>();
         List<BufferedImage> destimgs3 = new ArrayList<>();
         List<BufferedImage> destimgs4 = new ArrayList<>();
         List<BufferedImage> dests = new ArrayList<>();
+        List<String> destloops1 = new ArrayList<>();
+        List<String> destloops2 = new ArrayList<>();
+        List<String> destloops3 = new ArrayList<>();
+        List<String> destloops4 = new ArrayList<>();
+        List<String> destskills1 = new ArrayList<>();
+        List<String> destskills2 = new ArrayList<>();
+        List<String> destskills3 = new ArrayList<>();
+        List<String> destskills4 = new ArrayList<>();
         BufferedImage dest1 = null;
         BufferedImage dest2 = null;
         BufferedImage dest3 = null;
@@ -79,32 +87,40 @@ public class ImageUtils {
         for (int i = 0; i < imgs.size(); i++) {
             if (i <= 5) {
                 destimgs1.add(imgs.get(i));
+                destloops1.add(loops.get(i));
+                destskills1.add(skills.get(i));
             } else if (i <= 11 && i > 5) {
                 destimgs2.add(imgs.get(i));
+                destloops2.add(loops.get(i));
+                destskills2.add(skills.get(i));
             } else if (i <= 17 && i > 11) {
                 destimgs3.add(imgs.get(i));
+                destloops3.add(loops.get(i));
+                destskills3.add(skills.get(i));
             } else if (i <= 23 && i > 17) {
                 destimgs4.add(imgs.get(i));
+                destloops4.add(loops.get(i));
+                destskills4.add(skills.get(i));
             }
         }
         try {
             if (!destimgs1.isEmpty()) {
-                dest1 = mergeImage(true, destimgs1);
+                dest1 = mergeImage(true, destimgs1, destloops1, destskills1);
                 dests.add(dest1);
             }
             if (!destimgs2.isEmpty()) {
-                dest2 = mergeImage(true, destimgs2);
+                dest2 = mergeImage(true, destimgs2, destloops2, destskills2);
                 dests.add(dest2);
             }
             if (!destimgs3.isEmpty()) {
-                dest3 = mergeImage(true, destimgs3);
+                dest3 = mergeImage(true, destimgs3, destloops3, destskills3);
                 dests.add(dest3);
             }
             if (!destimgs4.isEmpty()) {
-                dest4 = mergeImage(true, destimgs4);
+                dest4 = mergeImage(true, destimgs4, destloops4, destskills4);
                 dests.add(dest4);
             }
-            finalDest = mergeImage(false, dests);
+            finalDest = mergeImage(false, dests, null, null);
         } catch (Exception e) {
             e.printStackTrace();
             finalDest = null;
@@ -114,17 +130,14 @@ public class ImageUtils {
 
 
     /**
-     * 2  * 合并任数量的图片成一张图片
-     * 3  *
-     * 4  * @param isHorizontal
-     * 5  *            true代表水平合并，fasle代表垂直合并
-     * 6  * @param imgs
-     * 7  *            待合并的图片数组
-     * 8  * @return
-     * 9  * @throws IOException
-     * 10
+     * 拼接图片
+     *
+     * @param isHorizontal 是否水平拼接
+     * @param imgs         待拼接数组
+     * @return 拼接过会的图片
+     * @throws IOException
      */
-    public static BufferedImage mergeImage(boolean isHorizontal, List<BufferedImage> imgs) throws IOException {
+    public static BufferedImage mergeImage(boolean isHorizontal, List<BufferedImage> imgs, List<String> loops, List<String> skills) throws IOException {
         // 生成新图片
         BufferedImage destImage = null;
         Graphics graphics = null;
@@ -149,18 +162,18 @@ public class ImageUtils {
             graphics.fillRect(0, 0, allw, allhMax + allhMax / 2);
             graphics.setColor(Color.WHITE);
             graphics.drawLine(0, 0, allw, allhMax + allhMax / 2);
-            graphics.dispose();
         } else {
             destImage = new BufferedImage(allwMax, allh, BufferedImage.TYPE_INT_RGB);
             graphics = destImage.getGraphics();
             graphics.fillRect(0, 0, allwMax, allh);
             graphics.setColor(Color.WHITE);
             graphics.drawLine(0, 0, allwMax, allh);
-            graphics.dispose();
         }
+        graphics.dispose();
         // 合并所有子图片到新图片
         int wx = 0, wy = 0;
-        Font font = new Font("Arial", Font.PLAIN, 48);
+        Font font = new Font("微软雅黑", Font.BOLD, 12);
+        graphics = destImage.createGraphics();
         for (int i = 0; i < imgs.size(); i++) {
             BufferedImage img = imgs.get(i);
             int w1 = img.getWidth();
@@ -171,12 +184,16 @@ public class ImageUtils {
             if (isHorizontal) { // 水平方向合并
                 destImage.setRGB(wx, h1 / 4, w1, h1, ImageArrayOne, 0, w1); // 设置上半部分或左半部分的RGB
                 graphics.setFont(font);
+                graphics.setColor(Color.BLACK);
+                graphics.drawString(loops.get(i).trim(), wx+6, h1/4 -4);
+                graphics.drawString(skills.get(i).trim(), wx+6, h1 + h1 / 2 -4);
             } else { // 垂直方向合并
                 destImage.setRGB(0, wy, w1, h1, ImageArrayOne, 0, w1); // 设置上半部分或左半部分的RGB
             }
             wx += w1;
             wy += h1;
         }
+        graphics.dispose();
         return destImage;
     }
 

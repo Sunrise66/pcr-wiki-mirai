@@ -319,16 +319,20 @@ class PluginMain extends PluginBase {
         messages.add(new PlainText("技能循环：\n"));
         List<AttackPattern> attackPatternList = chara.getAttackPatternList();
         List<BufferedImage> loopImages = new ArrayList<>();
+        List<String> loopStrs = new ArrayList<>();
+        List<String> skillNames = new ArrayList<>();
         int index = 0;
         for (AttackPattern pattern : attackPatternList) {
             for (AttackPattern.AttackPatternItem item : pattern.items) {
                 BufferedImage icon = getLoopIcon(index, charaId, item.iconUrl);
                 loopImages.add(icon);
+                loopStrs.add(item.loopText);
+                skillNames.add(item.skillText);
                 index++;
             }
         }
         index = 0;
-        BufferedImage skillImages = mergeImage(loopImages);
+        BufferedImage skillImages = mergeSkillImages(loopImages,loopStrs,skillNames);
         if (null!=skillImages) {
             messages.add(event.getGroup().uploadImage(skillImages));
         }
