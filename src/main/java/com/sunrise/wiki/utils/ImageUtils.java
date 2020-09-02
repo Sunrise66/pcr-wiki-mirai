@@ -1,15 +1,15 @@
 package com.sunrise.wiki.utils;
 
+import io.github.biezhi.webp.WebpIO;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,26 +31,32 @@ public class ImageUtils {
             savePath.mkdirs();
         }
         BufferedImage image = null;
+        File destImg = new File(savePath + File.separator + "dest.png");
         try {
+            if (destImg.exists()) {
+                destImg.delete();
+            }
             if (!target.exists()) {
-                System.out.println("=============1");
-                System.out.println(iconUrl);
                 HttpURLConnection conn = (HttpURLConnection) new URL(iconUrl).openConnection();
                 conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-                System.out.println(conn.getContentLength());
-                System.out.println("=============2");
                 InputStream inputStream = conn.getInputStream();
-                System.out.println(inputStream.available()+inputStream.toString());
-                System.out.println("=============3");
-                BufferedImage oriImg = ImageIO.read(inputStream);
-                System.out.println("=============4");
-                BufferedImage bufferedImage = zoomInImage(oriImg, times);
-                System.out.println("=============5");
-                ImageIO.write(bufferedImage, "png", target);
-                System.out.println("=============6");
+                FileOutputStream outputStream = new FileOutputStream(destImg);
+                byte[] buf = new byte[1024 * 1024];
+                int numRead;
+                while (true) {
+                    numRead = inputStream.read(buf);
+                    if (numRead <= 0) {
+                        break;
+                    }
+                    outputStream.write(buf, 0, numRead);
+                }
                 inputStream.close();
+                outputStream.close();
+                WebpIO.create().toNormalImage(destImg, target);
+                destImg.delete();
             }
-            image = ImageIO.read(target);
+            BufferedImage oriImg = ImageIO.read(target);
+            image = zoomInImage(oriImg,times);
             return image;
         } catch (Exception e) {
             e.printStackTrace();

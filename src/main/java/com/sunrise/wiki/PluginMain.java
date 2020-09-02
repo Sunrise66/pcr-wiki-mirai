@@ -16,6 +16,7 @@ import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.message.data.Image;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
@@ -106,9 +107,9 @@ class PluginMain extends PluginBase {
     public void onEnable() {
         this.getEventListener().subscribeAlways(GroupMessageEvent.class, (GroupMessageEvent event) -> {
 //            [mirai:source:2523,-1507788872][mirai:at:2928703159,@testbot] 查询角色 水吃
-            String nick = event.getBot().getNick();
             String commandStr = "";
-            if (event.getMessage().get(1).contentToString().contains("@" + nick)) {
+            System.out.println(event.getMessage().toString());
+            if (event.getMessage().toString().contains("at:" + event.getBot().getId())) {
                 try {
                     commandStr = event.getMessage().get(2).contentToString().trim();
                 } catch (IndexOutOfBoundsException e) {
