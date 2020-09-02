@@ -43,6 +43,7 @@ dependencies {
     implementation(files("src/main/resources/libs/commons-compress-1.19.jar"))
 //    implementation(files("src/main/resources/libs/webp-imageio-core-0.1.3.jar"))
     implementation(files("src/main/resources/libs/webp-imageio-0.1.7-SNAPSHOT.jar"))
+    implementation("com.twelvemonkeys.imageio:imageio-tiff:3.4.1")
     implementation("org.dom4j:dom4j:2.1.1")
     implementation("org.xerial:sqlite-jdbc:3.32.3.1")
     implementation("com.alibaba:fastjson:1.2.41")
