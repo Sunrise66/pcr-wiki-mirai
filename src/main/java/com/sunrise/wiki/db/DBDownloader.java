@@ -22,8 +22,8 @@ public class DBDownloader {
     public DBDownloader(String basePath, LogOut logOutCallback) {
         this.basePath = basePath;
         this.out = logOutCallback;
-        this.DB_VERSION_INFO_PATH = basePath + "\\" + "dbVersion.json";
-        this.DB_FILE_COMPRESSED_PATH = basePath + "\\" + Statics.DB_FILE_NAME_COMPRESSED;
+        this.DB_VERSION_INFO_PATH = basePath + File.separator + "dbVersion.json";
+        this.DB_FILE_COMPRESSED_PATH = basePath + File.separator + Statics.DB_FILE_NAME_COMPRESSED;
         this.DB_FILE_URL = Statics.DB_FILE_URL;
     }
 

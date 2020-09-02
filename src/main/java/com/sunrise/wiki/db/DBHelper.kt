@@ -86,7 +86,7 @@ class DBHelper private constructor(var dbFilePath: String) {
 //                        println(e.toString())
                     }
                     if (columnIdx != -1) {
-                        if (!f.canAccess(bean)) {
+                        if (!f.isAccessible()) {
                             f.isAccessible = true
                         }
                         val type = f.type

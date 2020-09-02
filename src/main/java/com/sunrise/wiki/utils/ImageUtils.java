@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -32,12 +33,21 @@ public class ImageUtils {
         BufferedImage image = null;
         try {
             if (!target.exists()) {
+                System.out.println("=============1");
+                System.out.println(iconUrl);
                 HttpURLConnection conn = (HttpURLConnection) new URL(iconUrl).openConnection();
                 conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+                System.out.println(conn.getContentLength());
+                System.out.println("=============2");
                 InputStream inputStream = conn.getInputStream();
+                System.out.println(inputStream.available()+inputStream.toString());
+                System.out.println("=============3");
                 BufferedImage oriImg = ImageIO.read(inputStream);
+                System.out.println("=============4");
                 BufferedImage bufferedImage = zoomInImage(oriImg, times);
+                System.out.println("=============5");
                 ImageIO.write(bufferedImage, "png", target);
+                System.out.println("=============6");
                 inputStream.close();
             }
             image = ImageIO.read(target);

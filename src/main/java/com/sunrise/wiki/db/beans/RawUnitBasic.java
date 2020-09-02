@@ -5,6 +5,7 @@ import com.sunrise.wiki.data.Chara;
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -86,8 +87,7 @@ public class RawUnitBasic {
             chara.position = "1";
 //            chara.setPositionIcon(R.drawable.position_forward);
             try {
-                File position_forward = new File(this.getClass().getClassLoader().getResource("position_forward.png").getPath());
-                chara.setPosIcon(ImageIO.read(position_forward));
+                chara.setPosIcon(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("position_forward.png")));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -95,8 +95,7 @@ public class RawUnitBasic {
             chara.position = "2";
 //            chara.setPositionIcon(R.drawable.position_middle);
             try {
-                File position_middle = new File(this.getClass().getClassLoader().getResource("position_middle.png").getPath());
-                chara.setPosIcon(ImageIO.read(position_middle));
+                chara.setPosIcon(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("position_middle.png")));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -104,8 +103,7 @@ public class RawUnitBasic {
             chara.position = "3";
 //            chara.setPositionIcon(R.drawable.position_rear);
             try {
-                File position_rear = new File(this.getClass().getClassLoader().getResource("position_rear.png").getPath());
-                chara.setPosIcon(ImageIO.read(position_rear));
+                chara.setPosIcon(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("position_rear.png")));
             } catch (IOException e) {
                 e.printStackTrace();
             }

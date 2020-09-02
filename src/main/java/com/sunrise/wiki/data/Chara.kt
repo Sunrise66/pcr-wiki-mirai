@@ -30,7 +30,7 @@ class Chara: Cloneable {
     var guildId: Int = 0
     var normalAtkCastTime: Double = 0.0
     var positionIcon: Int = 0
-    var posIcon: BufferedImage = ImageIO.read(File(this.javaClass.classLoader.getResource("position_middle.png").path))
+    var posIcon: BufferedImage = ImageIO.read(this.javaClass.classLoader.getResourceAsStream("position_middle.png"));
     var maxCharaLevel: Int = 0
     var maxCharaRank: Int = 0
     var maxUniqueEquipmentLevel: Int = 0

@@ -32,19 +32,19 @@ class ClanBattlePeriod(
     val iconBoss5 = phaseList[0].bossList[4].iconUrl
 
     val zodiacImage: BufferedImage = when(startTime.monthValue){
-        1 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_aquarious.png").path))
-        2 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_pisces.png").path))
-        3 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_aries.png").path))
-        4 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_taurus.png").path))
-        5 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_gemini.png").path))
-        6 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_cancer.png").path))
-        7 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_leo.png").path))
-        8 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_virgo.png").path))
-        9 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_libra.png").path))
-        10 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_scorpio.png").path))
-        11 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_sagittarious.png").path))
-        12 ->ImageIO.read(File(this.javaClass.classLoader.getResource("zodiac_capricorn.png").path))
-        else -> ImageIO.read(File(this.javaClass.classLoader.getResource("mic_chara_icon_place_holder.png").path))
+        1 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_aquarious.png"))
+        2 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_pisces.png"))
+        3 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_aries.png"))
+        4 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_taurus.png"))
+        5 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_gemini.png"))
+        6 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_cancer.png"))
+        7 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_leo.png"))
+        8 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_virgo.png"))
+        9 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_libra.png"))
+        10 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_scorpio.png"))
+        11 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_sagittarious.png"))
+        12 ->ImageIO.read(this.javaClass.classLoader.getResourceAsStream("zodiac_capricorn.png"))
+        else -> ImageIO.read(this.javaClass.classLoader.getResourceAsStream("mic_chara_icon_place_holder.png"))
     }
 //    val zodiacImage: Int? = when(startTime.monthValue){
 //        1 -> R.drawable.zodiac_aquarious

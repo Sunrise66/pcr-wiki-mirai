@@ -32,7 +32,7 @@ class PluginMain extends PluginBase {
     private boolean autoUpdate;
     private boolean clanBattle;
     private boolean isReady = false;
-    private List<Chara> charaList;
+    //    private List<Chara> charaList;
     private DBDownloader dbDownloader;
     private CharaStarter charaStarter;
     private ClanBattleStarter clanBattleStarter;
@@ -73,27 +73,12 @@ class PluginMain extends PluginBase {
         });
         dbDownloader.setCallback(() -> {
             equipmentStarter.loadData();
-            equipmentStarter.setCallBack(() -> charaStarter.loadData(equipmentStarter.getEquipmentMap()));
-            charaStarter.setCallBack(() -> {
-                charaList = charaStarter.getCharaList();
-                getLogger().info("角色数据加载完毕");
+            equipmentStarter.setCallBack(() -> {
                 isReady = true;
-                if (clanBattle) {
-                    getScheduler().delay(() -> {
-                        clanBattleStarter.loadData();
-                    }, 5000);
-                } else {
-                    questStarter.loadData();
-                }
+                getLogger().info("装备数据加载完成");
             });
-            if (clanBattle) {
-                clanBattleStarter.setCallBack(() -> {
-                    getLogger().info("会战数据加载完成");
-                    questStarter.loadData();
-                });
-            }
         });
-        Statics.setDbFilePath(getDataFolder().getPath() + "\\" + Statics.DB_FILE_NAME);
+        Statics.setDbFilePath(getDataFolder().getPath() + File.separator + Statics.DB_FILE_NAME);
 
         //如果用户设置了自动升级，则每隔24小时检查一次版本，否则只在加载插件时运行一次
         if (autoUpdate) {
@@ -107,7 +92,7 @@ class PluginMain extends PluginBase {
         }
 
         //读取花名册，需提前配置到资源文件夹，花名册由来详见README
-        File nicknameFile = new File(getDataFolder() + "\\" + "_pcr_data.json");
+        File nicknameFile = new File(getDataFolder() + File.separator + "_pcr_data.json");
         try {
             charaNameMap = new HashMap<>();
             charaNameMap = JSON.parseObject(new FileInputStream(nicknameFile), charaNameMap.getClass());
@@ -199,15 +184,8 @@ class PluginMain extends PluginBase {
         } else {
             event.getGroup().sendMessage("正在查询...");
         }
-        Chara chara = null;
-        for (Chara it :
-                charaList) {
-            if (charaId == it.getUnitId()) {
-                chara = it;
-                break;
-            }
-        }
-        charaStarter.mSetSelectedChara(chara);
+        CharaHelper charaHelper = new CharaHelper();
+        Chara chara = charaHelper.getFinalChara(charaId, equipmentStarter.getEquipmentMap());
         At at = new At(event.getSender());
         if (null == chara) {
             event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
@@ -249,15 +227,8 @@ class PluginMain extends PluginBase {
         } else {
             event.getGroup().sendMessage("正在查询...");
         }
-        Chara chara = null;
-        for (Chara it :
-                charaList) {
-            if (charaId == it.getUnitId()) {
-                chara = it;
-                break;
-            }
-        }
-        charaStarter.mSetSelectedChara(chara);
+        CharaHelper charaHelper = new CharaHelper();
+        Chara chara = charaHelper.getFinalChara(charaId, equipmentStarter.getEquipmentMap());
         At at = new At(event.getSender());
         StringBuffer sb = new StringBuffer();
         if (null == chara) {
@@ -304,14 +275,8 @@ class PluginMain extends PluginBase {
         Image expIcon;
         At at = new At(event.getSender());
         //获取角色对象，以获得更多信息
-        Chara chara = null;
-        for (Chara it : charaList) {
-            if (charaId == it.getUnitId()) {
-                chara = it;
-                break;
-            }
-        }
-        charaStarter.mSetSelectedChara(chara);
+        CharaHelper charaHelper = new CharaHelper();
+        Chara chara = charaHelper.getFinalChara(charaId, equipmentStarter.getEquipmentMap());
         List<Message> messages = new ArrayList<>();
         messages.add(at);
         messages.add(charaIcon);
@@ -332,8 +297,8 @@ class PluginMain extends PluginBase {
             }
         }
         index = 0;
-        BufferedImage skillImages = mergeSkillImages(loopImages,loopStrs,skillNames);
-        if (null!=skillImages) {
+        BufferedImage skillImages = mergeSkillImages(loopImages, loopStrs, skillNames);
+        if (null != skillImages) {
             messages.add(event.getGroup().uploadImage(skillImages));
         }
         List<Skill> skills = chara.getSkills();
@@ -443,8 +408,8 @@ class PluginMain extends PluginBase {
      * @return
      */
     private Image getSkillIcon(int unitId, int skillId, String iconUrl, GroupMessageEvent event) {
-        File skillIconPath = new File(getDataFolder() + "\\images\\skillIcons\\" + unitId);
-        File png = new File(getDataFolder() + "\\images\\skillIcons\\" + unitId + "\\" + skillId + ".png");
+        File skillIconPath = new File(getDataFolder() + File.separator + "images" + File.separator + "skillIcons" + File.separator + unitId);
+        File png = new File(getDataFolder() + File.separator + "images" + File.separator + "skillIcons" + File.separator + unitId + File.separator + skillId + ".png");
         return getIconWithPng(iconUrl, skillIconPath, png, 0.5, event);
     }
 
@@ -456,15 +421,15 @@ class PluginMain extends PluginBase {
      * @return
      */
     private Image getCharaIcon(int prefab_id, GroupMessageEvent event) {
-        File unitIconsPath = new File(getDataFolder() + "\\" + "images" + "\\" + "unitIcons");
-        File png = new File(getDataFolder() + "\\" + "images" + "\\" + "unitIcons" + "\\" + prefab_id + 30 + ".png");
+        File unitIconsPath = new File(getDataFolder() + File.separator + "images" + File.separator + "unitIcons");
+        File png = new File(getDataFolder() + File.separator + "images" + File.separator + "unitIcons" + File.separator + prefab_id + 30 + ".png");
         String iconUrl = String.format(Locale.US, Statics.ICON_URL, prefab_id + 30);
         return getIconWithPng(iconUrl, unitIconsPath, png, 1, event);
     }
 
     private BufferedImage getLoopIcon(int index, int charaId, String iconUrl) {
-        File loopIconPath = new File(getDataFolder() + "\\images\\loopIcons\\"+charaId);
-        File png = new File(getDataFolder() + "\\images\\loopIcons\\" + charaId + "\\" + index + ".png");
+        File loopIconPath = new File(getDataFolder() + File.separator + "images" + File.separator + "loopIcons" + File.separator + charaId);
+        File png = new File(getDataFolder() + File.separator + "images" + File.separator + "loopIcons" + File.separator + charaId + File.separator + index + ".png");
         return getIconWithPng(iconUrl, loopIconPath, png, 0.5);
     }
 
