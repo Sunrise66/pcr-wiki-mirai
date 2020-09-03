@@ -42,7 +42,7 @@ dependencies {
     implementation("org.brotli:dec:0.1.2")
     implementation(files("src/main/resources/libs/commons-compress-1.19.jar"))
     implementation("io.github.biezhi:webp-io:0.0.5")
-    implementation("com.twelvemonkeys.imageio:imageio-tiff:3.4.1")
+//    implementation("com.twelvemonkeys.imageio:imageio-tiff:3.4.1")
     implementation("org.dom4j:dom4j:2.1.1")
     implementation("org.xerial:sqlite-jdbc:3.32.3.1")
     implementation("com.alibaba:fastjson:1.2.41")

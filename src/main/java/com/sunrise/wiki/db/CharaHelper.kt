@@ -25,7 +25,7 @@ class CharaHelper {
         setUnitSkillData(chara)
         setUnitAttackPattern(chara)
         chara.setCharaProperty()
-        chara?.apply {
+        chara.apply {
             skills.forEach {
                 it.setActionDescriptions(chara.maxCharaLevel, chara.charaProperty)
             }
