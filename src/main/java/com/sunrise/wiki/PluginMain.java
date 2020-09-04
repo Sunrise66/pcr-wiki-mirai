@@ -248,7 +248,7 @@ class PluginMain extends PluginBase {
         sb.append("喜好：").append(chara.getFavorite()).append("\n");
         sb.append("简介：").append(chara.getComment().replace("\\n", "\n")).append("\n\n");
         sb.append("发送 \"角色技能（空格）角色名\"来查询技能").append("\n");
-        sb.append("发送 \"角色出招（空格）角色名\"来查询角色技能循环");
+        sb.append("发送 \"角色详情（空格）角色名\"来查询角色详情信息");
 
         event.getGroup().sendMessage(at.plus("\n").plus(image.plus("\n" + sb.toString())));
 
