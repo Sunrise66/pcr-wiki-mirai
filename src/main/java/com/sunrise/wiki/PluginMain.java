@@ -278,6 +278,10 @@ class PluginMain extends PluginBase {
         //获取角色对象，以获得更多信息
         CharaHelper charaHelper = new CharaHelper();
         Chara chara = charaHelper.getFinalChara(charaId, equipmentStarter.getEquipmentMap());
+        if (null == chara) {
+            event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
+            return;
+        }
         List<Message> messages = new ArrayList<>();
         messages.add(at);
         messages.add(charaIcon);

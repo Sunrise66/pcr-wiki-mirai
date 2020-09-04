@@ -12,10 +12,12 @@ class CharaHelper {
     var maxUniqueEquipmentLevel: Int = 0
     var maxEnemyLevel: Int = 0
 
-    fun getFinalChara(unitid:Int,equipmentMap: Map<Int, Equipment>):Chara{
+    fun getFinalChara(unitid:Int,equipmentMap: Map<Int, Equipment>):Chara?{
         val chara = Chara()
         chara.unitId = unitid
-        loadBasic(chara)
+        if(!loadBasic(chara)){
+            return null
+        }
         setCharaMaxData(chara)
         setCharaRarity(chara)
         setCharaStoryStatus(chara)
@@ -33,9 +35,14 @@ class CharaHelper {
         return chara
     }
 
-    private fun loadBasic(chara: Chara){
+    private fun loadBasic(chara: Chara):Boolean{
         val rawUnitBasic = DBHelper.get().getCharaInfo(chara.unitId)
-        rawUnitBasic?.setCharaBasic(chara)
+        return if(null!=rawUnitBasic){
+            rawUnitBasic.setCharaBasic(chara)
+            true
+        }else{
+            false
+        }
     }
 
     private fun setCharaMaxData(chara: Chara) {
