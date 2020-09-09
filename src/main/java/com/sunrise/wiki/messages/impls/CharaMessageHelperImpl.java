@@ -29,10 +29,11 @@ public class CharaMessageHelperImpl implements CharaMessageHelper {
 
     /**
      * 构造方法
-     * @param dataFolder 插件的数据文件夹位置
+     *
+     * @param dataFolder       插件的数据文件夹位置
      * @param equipmentStarter
      */
-    public CharaMessageHelperImpl(String dataFolder,EquipmentStarter equipmentStarter) {
+    public CharaMessageHelperImpl(String dataFolder, EquipmentStarter equipmentStarter) {
         this.equipmentStarter = equipmentStarter;
         this.dataFolder = dataFolder;
         this.charaHelper = new CharaHelper();
@@ -111,13 +112,14 @@ public class CharaMessageHelperImpl implements CharaMessageHelper {
         messages.add(at);
         messages.add(charaIcon);
         messages.add(new PlainText("角色状态 -> \nRank：" + chara.getMaxCharaRank() + " Level：" + chara.getMaxCharaLevel() + "\n"));
-        messages.add(new PlainText("技能循环：\n"));
         List<AttackPattern> attackPatternList = chara.getAttackPatternList();
         List<BufferedImage> loopImages = new ArrayList<>();
         List<String> loopStrs = new ArrayList<>();
         List<String> skillNames = new ArrayList<>();
         int index = 0;
+        int j = 0;
         for (AttackPattern pattern : attackPatternList) {
+            messages.add(new PlainText("技能循环" + (j + 1) + "：\n"));
             for (AttackPattern.AttackPatternItem item : pattern.items) {
                 BufferedImage icon = getLoopIcon(index, charaId, item.iconUrl);
                 loopImages.add(icon);
@@ -125,16 +127,19 @@ public class CharaMessageHelperImpl implements CharaMessageHelper {
                 skillNames.add(item.skillText);
                 index++;
             }
-        }
-        index = 0;
-        BufferedImage skillImages = mergeSkillImages(loopImages, loopStrs, skillNames);
-        if (null != skillImages) {
-            messages.add(event.getGroup().uploadImage(skillImages));
+            BufferedImage skillImages = mergeSkillImages(loopImages, loopStrs, skillNames);
+            if (null != skillImages) {
+                messages.add(event.getGroup().uploadImage(skillImages));
+            }
+            loopImages.clear();
+            loopStrs.clear();
+            skillNames.clear();
+            j++;
         }
         List<Skill> skills = chara.getSkills();
         for (Skill skill : skills) {
             skillIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
-            messages.add(new PlainText(skill.getSkillClass().getValue() + "\n"));
+            messages.add(new PlainText(skill.getSkillClass().description().trim() + "\n"));
             messages.add(skillIcon);
             messages.add(new PlainText(skill.getSkillName() + "\n"));
             messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
@@ -175,7 +180,7 @@ public class CharaMessageHelperImpl implements CharaMessageHelper {
 
     private BufferedImage getLoopIcon(int index, int charaId, String iconUrl) {
         File loopIconPath = new File(dataFolder + File.separator + "images" + File.separator + "loopIcons" + File.separator + charaId);
-        File png = new File(dataFolder+ File.separator + "images" + File.separator + "loopIcons" + File.separator + charaId + File.separator + index + ".png");
+        File png = new File(dataFolder + File.separator + "images" + File.separator + "loopIcons" + File.separator + charaId + File.separator + index + ".png");
         return getIconWithPng(iconUrl, loopIconPath, png, 0.5);
     }
 
