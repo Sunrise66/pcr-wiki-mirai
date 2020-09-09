@@ -100,13 +100,7 @@ public class CharaMessageHelperImpl implements CharaMessageHelper {
     public Message getCharaSkills(int charaId, GroupMessageEvent event) {
         event.getGroup().sendMessage("正在查询...");
         Image charaIcon = getCharaIcon(charaId, event);
-        Image ubIcon;
-        Image s1Icon;
-        Image s1pIcon;
-        Image s2Icon;
-        Image s2pIcon;
-        Image exIcon;
-        Image expIcon;
+        Image skillIcon;
         At at = new At(event.getSender());
         //获取角色对象，以获得更多信息
         Chara chara = charaHelper.getFinalChara(charaId, equipmentStarter.getEquipmentMap());
@@ -139,83 +133,15 @@ public class CharaMessageHelperImpl implements CharaMessageHelper {
         }
         List<Skill> skills = chara.getSkills();
         for (Skill skill : skills) {
-            if (skill.getSkillClass().getValue().equals(StringsCN.union_burst)) {
-                ubIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
-                messages.add(new PlainText(skill.getSkillClass().getValue() + "\n"));
-                messages.add(ubIcon);
-                messages.add(new PlainText(skill.getSkillName() + "\n"));
-                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
-                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
-                messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
-                messages.add(new PlainText("======================\n"));
-            }
-            if (skill.getSkillClass().getValue().equals("M1")) {
-                s1Icon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
-                messages.add(new PlainText(StringsCN.main_skill_1 + "\n"));
-                messages.add(s1Icon);
-                messages.add(new PlainText(skill.getSkillName() + "\n"));
-                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
-                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
-                messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
-                messages.add(new PlainText("======================\n"));
-            }
-            if (skill.getSkillClass().getValue().equals("M1+")) {
-                s1pIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
-                messages.add(new PlainText(StringsCN.main_skill_1_evo + "\n"));
-                messages.add(s1pIcon);
-                messages.add(new PlainText(skill.getSkillName() + "\n"));
-                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
-                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
-                messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
-                messages.add(new PlainText("======================\n"));
-            }
-            if (skill.getSkillClass().getValue().equals("M2")) {
-                s2Icon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
-                messages.add(new PlainText(StringsCN.main_skill_2 + "\n"));
-                messages.add(s2Icon);
-                messages.add(new PlainText(skill.getSkillName() + "\n"));
-                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
-                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
-                messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
-                messages.add(new PlainText("======================\n"));
-            }
-            if (skill.getSkillClass().getValue().equals("M2+")) {
-                s2pIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
-                messages.add(new PlainText(StringsCN.main_skill_2_evo + "\n"));
-                messages.add(s2pIcon);
-                messages.add(new PlainText(skill.getSkillName() + "\n"));
-                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
-                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
-                messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
-                messages.add(new PlainText("======================\n"));
-            }
-            if (skill.getSkillClass().getValue().equals("E1")) {
-                exIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
-                messages.add(new PlainText(StringsCN.ex_skill_1 + "\n"));
-                messages.add(exIcon);
-                messages.add(new PlainText(skill.getSkillName() + "\n"));
-                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
-                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
-                messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
-                messages.add(new PlainText("======================\n"));
-            }
-            if (skill.getSkillClass().getValue().equals("E1+")) {
-                expIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
-                messages.add(new PlainText(StringsCN.ex_skill_1_evo + "\n"));
-                messages.add(expIcon);
-                messages.add(new PlainText(skill.getSkillName() + "\n"));
-                messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
-                messages.add(new PlainText(skill.getCastTimeText() + "\n"));
-                messages.add(new PlainText("技能效果：" + "\n"));
-                messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
-                messages.add(new PlainText("======================\n"));
-            }
+            skillIcon = getSkillIcon(charaId, skill.getSkillId(), skill.iconUrl, event);
+            messages.add(new PlainText(skill.getSkillClass().getValue() + "\n"));
+            messages.add(skillIcon);
+            messages.add(new PlainText(skill.getSkillName() + "\n"));
+            messages.add(new PlainText("技能描述：" + skill.getDescription() + "\n"));
+            messages.add(new PlainText(skill.getCastTimeText() + "\n"));
+            messages.add(new PlainText("技能效果：" + "\n"));
+            messages.add(new PlainText(skill.getActionDescriptions().toString() + "\n"));
+            messages.add(new PlainText("======================\n"));
         }
 
         return MessageUtils.newChain(messages);
