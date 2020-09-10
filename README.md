@@ -52,6 +52,6 @@
 即将发布，鉴于API变化过大，本项目首先会以适配1.0版本为主。
 
 ## 感谢
-* 本项目特别感谢[KasumiNotes](https://github.com/HerDataSam/KasumiNotes) 给予的灵感以及参考，[KasumiNotes](https://github.com/HerDataSam/KasumiNotes) 是一款综合类
+* 本项目特别感谢[ShizuruNotes](https://github.com/MalitsPlus/ShizuruNotes) 给予的灵感以及参考，[ShizuruNotes](https://github.com/MalitsPlus/ShizuruNotes) 是一款综合类
 Princess Connect Re:Dive WIKI 安卓APP
 * 特别感谢[Mirai](https://github.com/mamoe/mirai) 以及[mirai-console](https://github.com/mamoe/mirai-console) 的平台支持
