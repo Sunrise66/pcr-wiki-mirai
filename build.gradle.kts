@@ -4,13 +4,14 @@ import java.io.OutputStream
 import java.util.*
 
 plugins {
-    kotlin("jvm") version "1.3.71"
-    java
-    id("com.github.johnrengelman.shadow") version "6.0.0"
+    kotlin("jvm") version "1.4.0"
+    kotlin("plugin.serialization") version "1.4.0"
+    kotlin("kapt") version "1.4.0"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 group = "sunrise"
-version = "0.1.0"
+version = "0.2.0"
 
 repositories {
     maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
@@ -19,8 +20,8 @@ repositories {
     jcenter()
 }
 
-val miraiCoreVersion = "1.1.3"
-val miraiConsoleVersion = "0.5.2"
+val miraiCoreVersion = "1.3.1"
+val miraiConsoleVersion = "1.0-RC-dev-29"
 val ktorVersion = "1.3.71"
 val kotlinVersion = "1.3.71"
 val kotlinSerializationVersion = "1.0.0-RC"
@@ -35,10 +36,14 @@ dependencies {
     compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
     compileOnly ("org.jetbrains.kotlinx:kotlinx-io-jvm:$kotlinx_io_version")
 
-    api("net.mamoe:mirai-console:$miraiConsoleVersion")
+    val autoService = "1.0-rc7"
+    kapt("com.google.auto.service", "auto-service", autoService)
+    compileOnly("com.google.auto.service", "auto-service-annotations", autoService)
 
-    implementation("net.mamoe:mirai-serialization-common:$miraiCoreVersion")
-    implementation("net.mamoe:mirai-serialization:$miraiCoreVersion")
+//    api("net.mamoe:mirai-console:$miraiConsoleVersion")
+
+//    implementation("net.mamoe:mirai-serialization-common:$miraiCoreVersion")
+//    implementation("net.mamoe:mirai-serialization:$miraiCoreVersion")
     implementation("org.brotli:dec:0.1.2")
     implementation(files("src/main/resources/libs/commons-compress-1.19.jar"))
     implementation("io.github.biezhi:webp-io:0.0.5")
@@ -49,8 +54,11 @@ dependencies {
 
     testImplementation(kotlin("stdlib-jdk8"))
     testImplementation("net.mamoe:mirai-core:$miraiCoreVersion")
-    testImplementation("net.mamoe:mirai-core-qqandroid:$miraiCoreVersion")
+//    testImplementation("org.jline:jline-terminal-jansi:3.9.0")
+//    testImplementation("net.mamoe:mirai-core-qqandroid:$miraiCoreVersion")
     testImplementation("net.mamoe:mirai-console:$miraiConsoleVersion")
+    testImplementation("net.mamoe:mirai-console-pure:1.0-M4")
+//    testImplementation("net.mamoe:mirai-console-terminal:$miraiConsoleVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-io-jvm:$kotlinx_io_version")
 }
 
@@ -62,9 +70,11 @@ java {
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.freeCompilerArgs += "-Xjvm-default=enable"
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.freeCompilerArgs += "-Xjvm-default=enable"
     }
 
     val runMiraiConsole by creating(JavaExec::class.java) {
@@ -106,7 +116,7 @@ tasks {
             classpath = sourceSets["test"].runtimeClasspath
             main = "mirai.RunMirai"
             standardInput = System.`in`
-            args(miraiCoreVersion, miraiConsoleVersion)
+            args("--help")
         }
     }
 }

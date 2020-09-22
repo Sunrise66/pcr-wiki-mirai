@@ -1,24 +1,29 @@
 package com.sunrise.wiki;
 
 import com.alibaba.fastjson.JSON;
+import com.google.auto.service.AutoService;
 import com.sunrise.wiki.common.Commands;
 import com.sunrise.wiki.common.Statics;
+import com.sunrise.wiki.config.MainConfig;
 import com.sunrise.wiki.db.*;
 import com.sunrise.wiki.messages.CharaMessageHelper;
 import com.sunrise.wiki.messages.impls.CharaMessageHelperImpl;
-import net.mamoe.mirai.console.plugins.Config;
-import net.mamoe.mirai.console.plugins.PluginBase;
+import net.mamoe.mirai.console.command.RawCommand;
+import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
+import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription;
+import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.data.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 
-class PluginMain extends PluginBase {
+@AutoService(JavaPlugin.class)
+public final class PluginMain extends JavaPlugin {
 
-    private Config setting;
     private String location;
     private Map<String, List<String>> charaNameMap;
     private boolean autoUpdate;
@@ -27,18 +32,30 @@ class PluginMain extends PluginBase {
     private EquipmentStarter equipmentStarter;
     private CharaMessageHelper charaMessageHelper;
 
-    public void onLoad() {
+    public static final PluginMain INSTANCE = new PluginMain();
 
-        this.setting = loadConfig("setting.yml");
-        this.setting.setIfAbsent("location", "CN");
-        this.setting.setIfAbsent("autoUpdate", true);
-        this.setting.setIfAbsent("clanBattle", false);
+    public PluginMain() {
+        super(new JvmPluginDescriptionBuilder(
+                        "com.sunrise.pcrwiki", // name
+                        "0.2.0" // version
+                )
+                        .author("Sunrise66")
+                        // .info("...")
+                        .build()
+        );
+    }
 
-        this.location = this.setting.getString("location");
-        this.autoUpdate = this.setting.getBoolean("autoUpdate");
+    public PluginMain(@NotNull JvmPluginDescription description) {
+        super(description);
+    }
+
+    private void init() {
+
+        this.location = MainConfig.INSTANCE.getLocation();
+        this.autoUpdate = MainConfig.INSTANCE.getAutoUpdate();
 
         this.equipmentStarter = new EquipmentStarter();
-        this.charaMessageHelper = new CharaMessageHelperImpl(getDataFolder().getAbsolutePath(),equipmentStarter);
+        this.charaMessageHelper = new CharaMessageHelperImpl(getDataFolder().getAbsolutePath(), equipmentStarter);
 
         if ("JP".equals(this.location)) {
             Statics.DB_FILE_URL = Statics.DB_FILE_URL_JP;
@@ -68,15 +85,14 @@ class PluginMain extends PluginBase {
 
         //如果用户设置了自动升级，则每隔24小时检查一次版本，否则只在加载插件时运行一次
         if (autoUpdate) {
-            getScheduler().repeat(() -> {
+            getScheduler().repeating(1000 * 60 * 60 * 24, () -> {
                 dbDownloader.checkDBVersion();
-            }, 1000 * 60 * 60 * 24);
+            });
         } else {
             getScheduler().async(() -> {
                 dbDownloader.checkDBVersion();
             });
         }
-
         //读取花名册，需提前配置到资源文件夹，花名册由来详见README
         File nicknameFile = new File(getDataFolder() + File.separator + "_pcr_data.json");
         try {
@@ -90,87 +106,90 @@ class PluginMain extends PluginBase {
     }
 
     public void onEnable() {
-        this.getEventListener().subscribeAlways(GroupMessageEvent.class, (GroupMessageEvent event) -> {
-//            [mirai:source:2523,-1507788872][mirai:at:2928703159,@testbot] 查询角色 水吃
-            String commandStr = "";
-//            System.out.println(event.getMessage().toString());
-            if (event.getMessage().toString().contains("at:" + event.getBot().getId())) {
-                try {
-                    commandStr = event.getMessage().get(2).contentToString().trim();
-                } catch (IndexOutOfBoundsException e) {
-                    commandStr = "";
-                }
-            }
-            getLogger().info("commandStr:" + commandStr);
-            Matcher searchCharaPrfMatcher = Commands.searchCharaPrf.matcher(commandStr);
-            Matcher searchCharaDetailMatcher = Commands.searchCharaDetail.matcher(commandStr);
-            Matcher searchCharaSkillMatcher = Commands.searchCharaSkill.matcher(commandStr);
-            if (searchCharaPrfMatcher.find()) {
-                if(!checkEnable(event)){
-                    return;
-                }
-                String charaName = searchCharaPrfMatcher.group("name").trim();
-                if ("".equals(charaName)) {
-                    event.getGroup().sendMessage("请输入角色名");
-                    return;
-                }
-                int charaId = getIdByName(charaName);
-                if (charaId == 100001) {
-                    At at = new At(event.getSender());
-                    event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
-                } else {
-                    event.getGroup().sendMessage(charaMessageHelper.getCharaInfo(charaId,event));
-                }
-            }
-            if (searchCharaDetailMatcher.find()) {
-                if(!checkEnable(event)){
-                    return;
-                }
-                String charaName = searchCharaDetailMatcher.group("name").trim();
-                if ("".equals(charaName)) {
-                    event.getGroup().sendMessage("请输入角色名");
-                    return;
-                }
-                int charaId = getIdByName(charaName);
-                if (charaId == 100001) {
-                    At at = new At(event.getSender());
-                    event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
-                } else {
-                    event.getGroup().sendMessage(charaMessageHelper.getCharaDetails(charaId,event));
-                }
-            }
-            if (searchCharaSkillMatcher.find()) {
-                if(!checkEnable(event)){
-                    return;
-                }
-                String charaName = "";
-                int lv = 0;
-                int rank = 0;
-                if (null == searchCharaSkillMatcher.group("name1") && null == searchCharaSkillMatcher.group("name2")) {
-                    event.getGroup().sendMessage("请输入正确的指令");
-                    return;
-                }
-                if (null == searchCharaSkillMatcher.group("name1") && null != searchCharaSkillMatcher.group("name2")) {
-                    charaName = searchCharaSkillMatcher.group("name2").trim();
-                    if ("".equals(charaName)) {
-                        event.getGroup().sendMessage("请输入角色名");
-                        return;
-                    }
-                }
-                if (null != searchCharaSkillMatcher.group("name1")) {
-                    charaName = searchCharaSkillMatcher.group("name1").trim();
-                    lv = Integer.parseInt(searchCharaSkillMatcher.group("lv").replace("l", "").trim());
-                    rank = Integer.parseInt(searchCharaSkillMatcher.group("rank").replace("r", "").trim());
-                }
-                int charaId = getIdByName(charaName);
-                if (charaId == 100001) {
-                    At at = new At(event.getSender());
-                    event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
-                } else {
-                    event.getGroup().sendMessage(charaMessageHelper.getCharaSkills(charaId,event));
-                }
-            }
-        });
+        init();
+        getLogger().debug(RawCommand.Companion.toString());
+        System.out.println(RawCommand.Companion.toString());
+//        this.getEventListener().subscribeAlways(GroupMessageEvent.class, (GroupMessageEvent event) -> {
+////            [mirai:source:2523,-1507788872][mirai:at:2928703159,@testbot] 查询角色 水吃
+//            String commandStr = "";
+////            System.out.println(event.getMessage().toString());
+//            if (event.getMessage().toString().contains("at:" + event.getBot().getId())) {
+//                try {
+//                    commandStr = event.getMessage().get(2).contentToString().trim();
+//                } catch (IndexOutOfBoundsException e) {
+//                    commandStr = "";
+//                }
+//            }
+//            getLogger().info("commandStr:" + commandStr);
+//            Matcher searchCharaPrfMatcher = Commands.searchCharaPrf.matcher(commandStr);
+//            Matcher searchCharaDetailMatcher = Commands.searchCharaDetail.matcher(commandStr);
+//            Matcher searchCharaSkillMatcher = Commands.searchCharaSkill.matcher(commandStr);
+//            if (searchCharaPrfMatcher.find()) {
+//                if (!checkEnable(event)) {
+//                    return;
+//                }
+//                String charaName = searchCharaPrfMatcher.group("name").trim();
+//                if ("".equals(charaName)) {
+//                    event.getGroup().sendMessage("请输入角色名");
+//                    return;
+//                }
+//                int charaId = getIdByName(charaName);
+//                if (charaId == 100001) {
+//                    At at = new At(event.getSender());
+//                    event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
+//                } else {
+//                    event.getGroup().sendMessage(charaMessageHelper.getCharaInfo(charaId, event));
+//                }
+//            }
+//            if (searchCharaDetailMatcher.find()) {
+//                if (!checkEnable(event)) {
+//                    return;
+//                }
+//                String charaName = searchCharaDetailMatcher.group("name").trim();
+//                if ("".equals(charaName)) {
+//                    event.getGroup().sendMessage("请输入角色名");
+//                    return;
+//                }
+//                int charaId = getIdByName(charaName);
+//                if (charaId == 100001) {
+//                    At at = new At(event.getSender());
+//                    event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
+//                } else {
+//                    event.getGroup().sendMessage(charaMessageHelper.getCharaDetails(charaId, event));
+//                }
+//            }
+//            if (searchCharaSkillMatcher.find()) {
+//                if (!checkEnable(event)) {
+//                    return;
+//                }
+//                String charaName = "";
+//                int lv = 0;
+//                int rank = 0;
+//                if (null == searchCharaSkillMatcher.group("name1") && null == searchCharaSkillMatcher.group("name2")) {
+//                    event.getGroup().sendMessage("请输入正确的指令");
+//                    return;
+//                }
+//                if (null == searchCharaSkillMatcher.group("name1") && null != searchCharaSkillMatcher.group("name2")) {
+//                    charaName = searchCharaSkillMatcher.group("name2").trim();
+//                    if ("".equals(charaName)) {
+//                        event.getGroup().sendMessage("请输入角色名");
+//                        return;
+//                    }
+//                }
+//                if (null != searchCharaSkillMatcher.group("name1")) {
+//                    charaName = searchCharaSkillMatcher.group("name1").trim();
+//                    lv = Integer.parseInt(searchCharaSkillMatcher.group("lv").replace("l", "").trim());
+//                    rank = Integer.parseInt(searchCharaSkillMatcher.group("rank").replace("r", "").trim());
+//                }
+//                int charaId = getIdByName(charaName);
+//                if (charaId == 100001) {
+//                    At at = new At(event.getSender());
+//                    event.getGroup().sendMessage(at.plus("\n").plus("不知道您要查找的角色是谁呢？可能是未实装角色哦~"));
+//                } else {
+//                    event.getGroup().sendMessage(charaMessageHelper.getCharaSkills(charaId, event));
+//                }
+//            }
+//        });
         getLogger().info("Plugin enabled!");
     }
 

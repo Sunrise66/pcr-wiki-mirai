@@ -1,12 +1,13 @@
 package com.sunrise.wiki.db;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.sunrise.wiki.common.DBVersionInfo;
 import com.sunrise.wiki.common.Statics;
 import com.sunrise.wiki.utils.BrotliUtils;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -42,10 +43,13 @@ public class DBDownloader {
             getDBVersion();
         } else {
             try {
-                JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(new FileInputStream(DB_VERSION_INFO), StandardCharsets.UTF_8))).getAsJsonObject();
-                dbVersion = object.get("TruthVersion").getAsLong();
+                Object object = JSON.parseObject(new FileInputStream(DB_VERSION_INFO), DBVersionInfo.class);
+                DBVersionInfo dbVersionInfo =JSON.parseObject(new FileInputStream(DB_VERSION_INFO), DBVersionInfo.class);
+//                JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(new FileInputStream(DB_VERSION_INFO), StandardCharsets.UTF_8))).getAsJsonObject();
+//                dbVersion = object.getClass().getField("TruthVersion").getLong(object);
+                dbVersion = dbVersionInfo.getTruthVersion();
                 getDBVersion();
-            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -111,8 +115,9 @@ public class DBDownloader {
             }
             reader.close();
             String lastVersionJson = sbf.toString();
-            JsonObject object = JsonParser.parseString(lastVersionJson).getAsJsonObject();
-            Long serverVersion = object.get("TruthVersion").getAsLong();
+            JSONObject object = JSON.parseObject(lastVersionJson);
+//            JsonObject object = JsonParser.parseString(lastVersionJson).getAsJsonObject();
+            Long serverVersion = object.getLong("TruthVersion");
             if (!dbVersion.equals(serverVersion)) {
                 out.out("数据库不是最新版本，开始下载！");
                 if (downloadDB()) {
