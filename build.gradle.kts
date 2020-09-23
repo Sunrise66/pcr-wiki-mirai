@@ -20,8 +20,8 @@ repositories {
     jcenter()
 }
 
-val miraiCoreVersion = "1.3.1"
-val miraiConsoleVersion = "1.0-RC-dev-29"
+val miraiCoreVersion = "1.3.0"
+val miraiConsoleVersion = "1.0-M4"
 val ktorVersion = "1.3.71"
 val kotlinVersion = "1.3.71"
 val kotlinSerializationVersion = "1.0.0-RC"
@@ -40,7 +40,7 @@ dependencies {
     kapt("com.google.auto.service", "auto-service", autoService)
     compileOnly("com.google.auto.service", "auto-service-annotations", autoService)
 
-//    api("net.mamoe:mirai-console:$miraiConsoleVersion")
+    api("net.mamoe:mirai-console:$miraiConsoleVersion")
 
 //    implementation("net.mamoe:mirai-serialization-common:$miraiCoreVersion")
 //    implementation("net.mamoe:mirai-serialization:$miraiCoreVersion")
@@ -57,7 +57,7 @@ dependencies {
 //    testImplementation("org.jline:jline-terminal-jansi:3.9.0")
 //    testImplementation("net.mamoe:mirai-core-qqandroid:$miraiCoreVersion")
     testImplementation("net.mamoe:mirai-console:$miraiConsoleVersion")
-    testImplementation("net.mamoe:mirai-console-pure:1.0-M4")
+    testImplementation("net.mamoe:mirai-console-pure:$miraiConsoleVersion")
 //    testImplementation("net.mamoe:mirai-console-terminal:$miraiConsoleVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-io-jvm:$kotlinx_io_version")
 }

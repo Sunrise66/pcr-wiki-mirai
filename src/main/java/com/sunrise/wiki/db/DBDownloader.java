@@ -7,7 +7,6 @@ import com.sunrise.wiki.common.Statics;
 import com.sunrise.wiki.utils.BrotliUtils;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -19,13 +18,20 @@ public class DBDownloader {
     private String DB_VERSION_INFO_PATH;
     private String DB_FILE_COMPRESSED_PATH;
     private String DB_FILE_URL;
+    private static DBDownloader instance;
 
-    public DBDownloader(String basePath, LogOut logOutCallback) {
+    private DBDownloader(String basePath, LogOut logOutCallback) {
         this.basePath = basePath;
         this.out = logOutCallback;
         this.DB_VERSION_INFO_PATH = basePath + File.separator + "dbVersion.json";
         this.DB_FILE_COMPRESSED_PATH = basePath + File.separator + Statics.DB_FILE_NAME_COMPRESSED;
         this.DB_FILE_URL = Statics.DB_FILE_URL;
+    }
+
+    public static DBDownloader getInstance(String basePath, LogOut logOutCallback){
+        if(instance==null){
+            instance = new DBDownloader(basePath,logOutCallback);
+        } return instance;
     }
 
     public boolean isReady() {
