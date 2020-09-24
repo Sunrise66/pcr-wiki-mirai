@@ -80,7 +80,7 @@ public class CharaMessageHelperImpl implements CharaMessageHelper {
         messages.add(charaIcon);
         messages.add(new PlainText(chara.getUnitName() + "\n"));
         messages.add(new PlainText("角色状态:-->\n"));
-        messages.add(new PlainText("rank：" + chara.getMaxCharaRank() + "  " + "Level：" + chara.getMaxCharaLevel() + "\n"));
+        messages.add(new PlainText("rank:" + chara.getMaxCharaRank() + "        " + "Level:" + chara.getMaxCharaLevel() + "\n"));
         messages.add(new PlainText("======================\n"));
         messages.add(new PlainText(String.format(StringsCN.text_normal_attack_cast_time, chara.getNormalAtkCastTime()) + "\n"));
         messages.add(new PlainText(StringsCN.text_physical_atk + " " + charaProperty.getAtk() + "\n" + StringsCN.text_magical_atk + " " + charaProperty.getMagicStr() + "\n"));
@@ -111,7 +111,8 @@ public class CharaMessageHelperImpl implements CharaMessageHelper {
         List<Message> messages = new ArrayList<>();
         messages.add(at);
         messages.add(charaIcon);
-        messages.add(new PlainText("角色状态 -> \nRank：" + chara.getMaxCharaRank() + " Level：" + chara.getMaxCharaLevel() + "\n"));
+        messages.add(new PlainText(chara.getUnitName()+"\n"));
+        messages.add(new PlainText("角色状态 -> \nRank:" + chara.getMaxCharaRank() +"           "+"Level:" + chara.getMaxCharaLevel() + "\n"));
         List<AttackPattern> attackPatternList = chara.getAttackPatternList();
         List<BufferedImage> loopImages = new ArrayList<>();
         List<String> loopStrs = new ArrayList<>();

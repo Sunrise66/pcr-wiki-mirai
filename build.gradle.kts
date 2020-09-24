@@ -33,6 +33,7 @@ val kotlinx_io_version = "0.1.1"
 dependencies {
     compileOnly(kotlin("stdlib-jdk8"))
     compileOnly("net.mamoe:mirai-core:$miraiCoreVersion")
+    compileOnly("net.mamoe:mirai-core-qqandroid:$miraiCoreVersion")
     compileOnly("net.mamoe:mirai-console:$miraiConsoleVersion")
     compileOnly ("org.jetbrains.kotlinx:kotlinx-io-jvm:$kotlinx_io_version")
 
@@ -55,7 +56,7 @@ dependencies {
     testImplementation(kotlin("stdlib-jdk8"))
     testImplementation("net.mamoe:mirai-core:$miraiCoreVersion")
 //    testImplementation("org.jline:jline-terminal-jansi:3.9.0")
-//    testImplementation("net.mamoe:mirai-core-qqandroid:$miraiCoreVersion")
+    testImplementation("net.mamoe:mirai-core-qqandroid:$miraiCoreVersion")
     testImplementation("net.mamoe:mirai-console:$miraiConsoleVersion")
     testImplementation("net.mamoe:mirai-console-pure:$miraiConsoleVersion")
 //    testImplementation("net.mamoe:mirai-console-terminal:$miraiConsoleVersion")
@@ -116,7 +117,7 @@ tasks {
             classpath = sourceSets["test"].runtimeClasspath
             main = "mirai.RunMirai"
             standardInput = System.`in`
-            args("--help")
+            args(miraiCoreVersion, miraiConsoleVersion)
         }
     }
 }

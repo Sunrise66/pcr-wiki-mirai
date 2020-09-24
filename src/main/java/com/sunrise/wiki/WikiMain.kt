@@ -40,7 +40,7 @@ object WikiMain : KotlinPlugin(JvmPluginDescription("com.sunrise.wiki", "0.2.0")
 
     override fun onEnable() {
         super.onEnable()
-        MainConfig.reload();
+        MainConfig.reload()
         init()
         subscribeAlways<GroupMessageEvent>() {
             if (!checkEnable(it)) {
@@ -49,12 +49,12 @@ object WikiMain : KotlinPlugin(JvmPluginDescription("com.sunrise.wiki", "0.2.0")
             var commandStr = ""
             if (it.message.toString().contains("at:" + it.bot.id, false)) {
                 commandStr = try {
-                    it.message[2].contentToString().trim();
+                    it.message[2].contentToString().trim()
                 } catch (e: IndexOutOfBoundsException) {
-                    "";
+                    ""
                 }
             }
-            logger.info("commandStr:$commandStr");
+            logger.info("commandStr:$commandStr")
             //获取指令
             val searchCharaPrfMatcher = Orders.searchCharaPrf.matcher(commandStr)
             val searchCharaDetailMatcher = Orders.searchCharaDetail.matcher(commandStr)
@@ -76,7 +76,7 @@ object WikiMain : KotlinPlugin(JvmPluginDescription("com.sunrise.wiki", "0.2.0")
                 }
             }
             if (searchCharaDetailMatcher.find()) {
-                val charaName = searchCharaPrfMatcher.group("name").trim()
+                val charaName = searchCharaDetailMatcher.group("name").trim()
                 if ("" == charaName) {
                     it.group.sendMessage("请输入角色名")
                     return@subscribeAlways
@@ -98,16 +98,16 @@ object WikiMain : KotlinPlugin(JvmPluginDescription("com.sunrise.wiki", "0.2.0")
                     return@subscribeAlways
                 }
                 if (null == searchCharaSkillMatcher.group("name1") && null != searchCharaSkillMatcher.group("name2")) {
-                    charaName = searchCharaSkillMatcher.group("name2").trim();
+                    charaName = searchCharaSkillMatcher.group("name2").trim()
                     if ("".equals(charaName)) {
                         it.group.sendMessage("请输入角色名")
                         return@subscribeAlways
                     }
                 }
                 if (null != searchCharaSkillMatcher.group("name1")) {
-                    charaName = searchCharaSkillMatcher.group("name1").trim();
-                    lv = Integer.parseInt(searchCharaSkillMatcher.group("lv").replace("l", "").trim());
-                    rank = Integer.parseInt(searchCharaSkillMatcher.group("rank").replace("r", "").trim());
+                    charaName = searchCharaSkillMatcher.group("name1").trim()
+                    lv = Integer.parseInt(searchCharaSkillMatcher.group("lv").replace("l", "").trim())
+                    rank = Integer.parseInt(searchCharaSkillMatcher.group("rank").replace("r", "").trim())
                 }
                 val charaId = getIdByName(charaName)
                 if (charaId == 100001) {
@@ -204,8 +204,8 @@ object WikiMain : KotlinPlugin(JvmPluginDescription("com.sunrise.wiki", "0.2.0")
     private suspend fun checkEnable(event: GroupMessageEvent): Boolean {
         if (!isReady) {
             event.group.sendMessage("数据库文件还未准备完成，请稍后再试！")
-            return false;
+            return false
         }
-        return true;
+        return true
     }
 }

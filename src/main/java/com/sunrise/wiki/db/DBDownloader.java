@@ -49,10 +49,7 @@ public class DBDownloader {
             getDBVersion();
         } else {
             try {
-                Object object = JSON.parseObject(new FileInputStream(DB_VERSION_INFO), DBVersionInfo.class);
                 DBVersionInfo dbVersionInfo =JSON.parseObject(new FileInputStream(DB_VERSION_INFO), DBVersionInfo.class);
-//                JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(new FileInputStream(DB_VERSION_INFO), StandardCharsets.UTF_8))).getAsJsonObject();
-//                dbVersion = object.getClass().getField("TruthVersion").getLong(object);
                 dbVersion = dbVersionInfo.getTruthVersion();
                 getDBVersion();
             } catch (IOException e) {
